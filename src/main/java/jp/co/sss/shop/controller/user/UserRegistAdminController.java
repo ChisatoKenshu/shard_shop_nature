@@ -68,7 +68,7 @@ public class UserRegistAdminController {
 	}
 
 	/**
-	 * 会員情報 登録確認処理
+	 * 会員情報登録確認処理
 	 *
 	 * @param form   会員情報フォーム
 	 * @param result 入力チェック結果

@@ -76,7 +76,7 @@ public class UserUpdateAdminController {
 	}
 
 	/**
-	 * 会員情報 変更確認処理
+	 * 会員情報変更確認処理
 	 *
 	 * @param model  Viewとの値受渡し
 	 * @param form   会員情報フォーム
