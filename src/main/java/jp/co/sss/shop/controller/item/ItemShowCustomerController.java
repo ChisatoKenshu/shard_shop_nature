@@ -30,7 +30,6 @@ public class ItemShowCustomerController {
 	 */
 	@RequestMapping(path = "/")
 	public String index(Model model) {
-		model.addAttribute("items", itemRepository.findAll());
 		
 		return "index";
 	}
