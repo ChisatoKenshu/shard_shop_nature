@@ -38,21 +38,23 @@ public class ItemShowCustomerController {
 		return "index";
 	}
 	
-	@RequestMapping(path = "/item/list/findAll")
-	public String itemListFindAll(Model model) {
-		model.addAttribute("items", itemRepository.findAll());
+	@RequestMapping(path = "/item/list/{sortType}")
+	public String showItemList(@PathVariable int sortType, Model model) {
+		if (sortType == 1) {
+			model.addAttribute("items", itemRepository.findByDeleteFlagOrderByInsertDateDescIdAsc(0));
+		}
 		return "item/list/item_list";
 	}
 	
 	@RequestMapping(path = "/item/detail/{id}")
-	public String itemDetail(@PathVariable int id, Model model) {
+	public String showItem(@PathVariable int id, Model model) {
 		model.addAttribute("item", itemRepository.getById(id));
 		
 		return "item/detail/item_detail";
 	}
 	
 	@RequestMapping(path = "/item/list/category/1")
-	public String item(Integer categoryId, Model model) {
+	public String showItemCategory(Integer categoryId, Model model) {
 		Category category = new Category();
 		category.setId(categoryId);
 		List<Item> item = itemRepository.findByCategory(category);
