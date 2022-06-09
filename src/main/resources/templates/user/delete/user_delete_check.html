@@ -2,12 +2,13 @@
 <html xmlns:th="http://www.thymeleaf.org"
         th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
 <head>
-<title>会員詳細 | シェアードショップ</title>
+<title>会員削除確認 | シェアードショップ</title>
 <meta charset="UTF-8" />
 </head>
-<body class="admin user_detail_admin">
-		<h2 class="title">会員詳細</h2>
-		<div class="user_detail_area">
+<body class="admin user_delete_check_admin">
+		<h2 class="title">会員削除確認</h2>
+		<p class="check_message">以下の内容を削除します。</p>
+		<div class="user_info_form_area">
 			<ul class="input_list">
 				<li>
 					<span class="input_title">メールアドレス</span>
@@ -38,19 +39,13 @@
 					</span>
 				</li>
 			</ul>
-		</div>
-
-		<div class="detail_button_area">
-			<form th:action="@{/user/list}">
-				<input type="submit" value="戻る" />
-			</form>
-			<form th:action="@{/user/update/input}" method="post">
+			<form th:action="@{/user/delete/complete}" method="post" class="user_info_form">
 				<input type="hidden" name="id" th:value="${user.id}" />
-				<input type="submit" value="変更" />
+				<input type="submit" value="削除" class="send_button delete" />
 			</form>
-			<form th:action="@{/user/delete/check}" method="post" th:if="${user.authority != 0}" >
+			<form method="post" th:action="@{/user/detail/{id}(id=${user.id})}" class="user_info_form">
 				<input type="hidden" name="id" th:value="${user.id}" />
-				<input type="submit" value="削除" class="delete" />
+				<input type="submit" value="戻る" class="back_button" />
 			</form>
 		</div>
 </body>
