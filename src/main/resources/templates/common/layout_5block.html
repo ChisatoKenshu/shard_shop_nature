@@ -8,11 +8,21 @@
 <link rel="stylesheet" type="text/css" th:href="@{/css/stylesheet.css}" />
 <title th:replace="${title}">シェアードショップ</title>
 </head>
-<body class="admin">
+<body class="user">
 	<!--/* ヘッダー */-->
 	<header>
 		<div th:replace="~{common/header :: layout-header}"></div>
 	</header>
+	<nav class="navi_area">
+		<ul class="navi_menu">
+			<li><a href=""> トップ </a></li>
+			<li><a href="item/list/1"> 新着一覧 </a></li>
+			<li><a href="/basket/list"> 買い物かご </a></li>
+			<li th:if="${session.user != null and session.user.authority == 2}">
+				<a href="order/list"> 注文一覧 </a>
+			</li>
+		</ul>
+	</nav>
 	<div class="container">
 		<!--/* サイドバー */-->
 		<aside>
