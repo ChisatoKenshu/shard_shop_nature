@@ -8,25 +8,20 @@
 <body>
 
 		<h2 class="title">買い物かご</h2>
-		<div th:text="${session.basketBean.name}"></div>
-		<div th:text="${basketBeanList}"></div>
-		<div th:if="${#lists.isEmpty(items)}">
+		<div th:if="${#lists.isEmpty(session.basketBeanList)}">
 			<p th:text="#{itemList.none}"></p>
 		</div>
-		<table th:if="!${#lists.isEmpty(items)}">
+		<table th:if="!${#lists.isEmpty(session.basketBeanList)}">
 			<tr>
-				<th>ID</th>
 				<th>商品名</th>
-				<th>価格</th>
-				<th>カテゴリ</th>
+				<th>stock</th>
+				<th>数</th>
 			</tr>
 			<!--/* 商品情報 */-->
-			<tr th:each="item: ${items}">
-				<td th:text="${item.id}"></td>
-				<td><a th:href="@{/item/detail/{id}(id=${item.id})}"
-					th:text="${item.name}"></a></td>
-				<td th:text="${item.price}"></td>
-				<td th:text="${item.category.name}"></td>
+			<tr th:each="basketBean: ${session.basketBeanList}">
+				<td th:text="${basketBean.name}"></td>
+				<td th:text="${basketBean.stock}"></td>
+				<td th:text="${basketBean.orderNum}"></td>
 			</tr>
 		</table>
 </body>

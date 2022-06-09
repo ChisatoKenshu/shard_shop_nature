@@ -31,24 +31,28 @@ public class BasketCustomerController {
 			Item item = itemRepository.getById(id);
 			List<BasketBean> basketBeanList = (List<BasketBean>) session.getAttribute("basketBeanList");
 			BasketBean basketBean = new BasketBean(id, item.getName(), item.getStock());
+			boolean isBasketListExistId = false;
 			if(basketBeanList.isEmpty()) {
+				basketBeanList.add(basketBean);
+			}else {
+				int cnt = 0;
+				for(BasketBean basketBeanCol : basketBeanList) {
+					if(basketBeanCol.getId() == basketBean.getId()) {
+						int getOrderNum  = basketBeanCol.getOrderNum() + 1;
+						basketBeanList.get(cnt).setOrderNum(getOrderNum);
+						isBasketListExistId = false;
+						break;
+					}else {
+						isBasketListExistId = true;
+					}
+					cnt++;
+				}
+			}
+			if(isBasketListExistId == true) {
 				basketBeanList.add(basketBean);
 			}
 
-			int cnt = 0;
-			for(BasketBean basketBeanCol : basketBeanList) {
-				if(basketBeanCol.getId() == basketBean.getId()) {
-					int getOrderNum  = basketBeanCol.getOrderNum() + 1;
-					basketBeanList.get(cnt).setOrderNum(getOrderNum);
-					System.out.println("\n\n\n\nsdgfsdfg\nstock: " + basketBeanList.get(0).getOrderNum());
-				}
-				cnt++;
-			}
 			session.setAttribute("basketBeanList", basketBeanList);
-			System.out.println();
-			
-			session.setAttribute("basketBean", basketBean);
-			model.addAttribute("basketBeanList",basketBeanList);
 		return "basket/shopping_basket";
 	}
 }
