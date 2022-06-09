@@ -11,7 +11,7 @@
 		<div th:if="${#lists.isEmpty(session.basketBeanList)}">
 			<p th:text="#{itemList.none}"></p>
 		</div>
-		<table th:if="!${#lists.isEmpty(session.basketBeanList)}">
+		<table class="list_table basket" th:if="!${#lists.isEmpty(session.basketBeanList)}">
 			<tr>
 				<th>商品名</th>
 				<th>stock</th>
