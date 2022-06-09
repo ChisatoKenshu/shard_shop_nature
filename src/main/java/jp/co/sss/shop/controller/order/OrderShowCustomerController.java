@@ -24,9 +24,9 @@ import jp.co.sss.shop.repository.OrderRepository;
 import jp.co.sss.shop.util.PriceCalc;
 
 /**
- * 注文管理 一覧表示機能(運用管理者用)のコントローラクラス
+ * 注文管理 一覧表示機能(一般会員用)のコントローラクラス
  *
- * @author SystemShared
+ * @author 横田
  */
 @Controller
 public class OrderShowCustomerController {
