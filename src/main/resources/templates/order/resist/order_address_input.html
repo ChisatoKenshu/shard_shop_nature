@@ -7,8 +7,8 @@
 </head>
 <body class="adress_regist">
 	<h2 class="title">お届け先入力</h2>
-	<div class="order_info_form_area">
-		<form th:action="@{/order/payment/input}" enctype="multipart/form-data"
+	<div class="adress_info_form_area">
+		<form th:action="@{/payment/input}" enctype="multipart/form-data"
 			method="post" class="adress_info_form" th:object="${orderForm}">
 
 			<ul th:if="${#fields.hasErrors('*')}" th:class="input_list">
