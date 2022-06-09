@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-        th:replace="~{common/layout_4block :: layout(~{::title},~{::body/content()})}">
+        th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
 <head>
 <title>買い物かご | シェアードショップ</title>
 <meta charset="UTF-8" />
@@ -8,7 +8,7 @@
 <body>
 
 		<h2 class="title">買い物かご</h2>
-
+		<div th:text="${basketBean.name}"></div>
 		<div th:if="${#lists.isEmpty(items)}">
 			<p th:text="#{itemList.none}"></p>
 		</div>
