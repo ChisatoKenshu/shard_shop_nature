@@ -44,7 +44,7 @@
 			<form th:action="@{/user/list}">
 				<input type="submit" value="戻る" />
 			</form>
-			<form th:action="@{/user/update/input/admin}" method="post">
+			<form th:action="@{/user/update/input}" method="post">
 				<input type="hidden" name="id" th:value="${user.id}" />
 				<input type="submit" value="変更" />
 			</form>
