@@ -79,7 +79,7 @@ public class ItemShowCustomerController {
 	public String showItemCategory(Integer categoryId, Model model) {
 		Category category = new Category();
 		category.setId(categoryId);
-		List<Item> item = itemRepository.findByCategory(category);
+		List<Item> item = itemRepository.findByDeleteFlagAndCategory(0, category);
 		model.addAttribute("items", item);
 		
 		return "item/list/item_list";
