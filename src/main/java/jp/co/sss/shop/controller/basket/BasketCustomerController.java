@@ -32,14 +32,23 @@ public class BasketCustomerController {
 			List<BasketBean> basketBeanList = (List<BasketBean>) session.getAttribute("basketBeanList");
 			BasketBean basketBean = new BasketBean(id, item.getName(), item.getStock());
 			boolean isBasketListExistId = false;
+			boolean isStockGreaterThanOrderNum = true;
+			
 			if(basketBeanList.isEmpty()) {
 				basketBeanList.add(basketBean);
+				model.addAttribute("basket", basketBean);
 			}else {
 				int cnt = 0;
 				for(BasketBean basketBeanCol : basketBeanList) {
 					if(basketBeanCol.getId() == basketBean.getId()) {
-						int getOrderNum  = basketBeanCol.getOrderNum() + 1;
-						basketBeanList.get(cnt).setOrderNum(getOrderNum);
+						
+						if(basketBeanCol.getStock() > basketBeanCol.getOrderNum()) {
+							int getOrderNum  = basketBeanCol.getOrderNum() + 1;
+							basketBeanList.get(cnt).setOrderNum(getOrderNum);
+						}else {
+							isStockGreaterThanOrderNum = false;
+						}
+						model.addAttribute("basket", basketBeanCol);
 						isBasketListExistId = false;
 						break;
 					}else {
@@ -50,8 +59,9 @@ public class BasketCustomerController {
 			}
 			if(isBasketListExistId == true) {
 				basketBeanList.add(basketBean);
+				model.addAttribute("basket", basketBean);
 			}
-
+			model.addAttribute("isStockGreaterThanOrderNum", isStockGreaterThanOrderNum);
 			session.setAttribute("basketBeanList", basketBeanList);
 		return "basket/shopping_basket";
 	}

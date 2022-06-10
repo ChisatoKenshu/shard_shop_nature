@@ -11,6 +11,9 @@
 		<div th:if="${#lists.isEmpty(session.basketBeanList)}">
 			<p th:text="#{basketList.none}"></p>
 		</div>
+		<div th:unless="${isStockGreaterThanOrderNum}">
+			<p th:text="${basket.name} + #{basketList.itemStockNone}" style="color: red"></p>
+		</div>
 		<table class="list_table basket" th:if="!${#lists.isEmpty(session.basketBeanList)}">
 			<tr>
 				<th>商品名</th>
