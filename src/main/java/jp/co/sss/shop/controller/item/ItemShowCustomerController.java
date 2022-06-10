@@ -1,5 +1,6 @@
 package jp.co.sss.shop.controller.item;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import jp.co.sss.shop.entity.Category;
 import jp.co.sss.shop.entity.Item;
 import jp.co.sss.shop.repository.ItemRepository;
+import jp.co.sss.shop.repository.OrderItemRepository;
 
 /**
  * 商品管理 一覧表示機能(一般会員用)のコントローラクラス
@@ -24,6 +26,12 @@ public class ItemShowCustomerController {
 	 */
 	@Autowired
 	ItemRepository itemRepository;
+	
+	/**
+	 * 商品情報
+	 */
+	@Autowired
+	OrderItemRepository orderItemRepository;
 
 	
 	/**
@@ -42,7 +50,15 @@ public class ItemShowCustomerController {
 	public String showItemList(@PathVariable int sortType, Model model) {
 		if (sortType == 1) {
 			model.addAttribute("items", itemRepository.findByDeleteFlagOrderByInsertDateDescIdAsc(0));
+		} else {
+			List<Integer> itemId = orderItemRepository.findIdSUMDescWithQuery();
+			List<Item> item = new ArrayList<>();
+			for (Integer id : itemId) {
+				item.add(itemRepository.getById(id));
+			}
+			model.addAttribute("items", item);
 		}
+		
 		return "item/list/item_list";
 	}
 	

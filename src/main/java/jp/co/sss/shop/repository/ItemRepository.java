@@ -22,5 +22,5 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
 	
 	/**  商品情報をカテゴリで検索*/
 	public List<Item> findByCategory(Category category);
-	
+
 }
