@@ -32,6 +32,13 @@
 			</div>
 			
 			<div class="detail_button_area">
+				<th:block th:if="${item.stock != 0}">
+					<form th:action="@{/basket/add}" method="post">
+						<input type="hidden" th:value="${item.id}" name="id">
+						<input type="submit" value="買い物かごに入れる" class="basket_button">
+					</form>
+				</th:block>
+				
 				<form th:action="@{/item/list/findAll}">
 				    <input type="submit" value="戻る"  class="back_button" />
 				</form>
