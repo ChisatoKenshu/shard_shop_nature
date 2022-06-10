@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import jp.co.sss.shop.bean.BasketBean;
 import jp.co.sss.shop.bean.UserBean;
+import jp.co.sss.shop.entity.Item;
 import jp.co.sss.shop.entity.Order;
 import jp.co.sss.shop.entity.OrderItem;
 import jp.co.sss.shop.form.OrderForm;
@@ -95,17 +96,30 @@ public class OrderRegistCustomerController {
 		// セッションから注文商品情報のリストを取得
 		List<BasketBean> beans = (List<BasketBean>) session.getAttribute("basketBeanList");
 		
-		// 注文商品情報の
+		// 注文商品情報のリストをorderItemに格納して登録
 		for(BasketBean bean: beans) {
 			OrderItem orderItem = new OrderItem();
+			Item item = new Item();
 			
+			// リスト内の商品情報を取得
+			item = itemRepository.getById(bean.getId());
+			
+			// orderItemの情報を設定
+			orderItem.setId(item.getId());
+			orderItem.setQuantity(bean.getOrderNum());
+			orderItem.setOrder(order);
+			orderItem.setItem(item);
+			orderItem.setPrice(item.getPrice());
+			
+			// 注文商品情報をリポジトリに保存する
+			orderItemRepository.save(orderItem);
+			// 注文商品情報リストに追加
+			orderItems.add(orderItem);
 		}
-
 		
-		// セッションの注文情報を格納する
-		
-		
-		
+		// 注文商品情報を上書きして保存
+		order.setOrderItemsList(orderItems);
+		orderRepository.save(order);
 
 		return "order/regist/order_complete";
 	}
