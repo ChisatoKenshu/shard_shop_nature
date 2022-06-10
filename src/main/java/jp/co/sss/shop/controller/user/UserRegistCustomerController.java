@@ -1,14 +1,68 @@
 package jp.co.sss.shop.controller.user;
 
+import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import jp.co.sss.shop.bean.UserBean;
+import jp.co.sss.shop.form.UserForm;
+import jp.co.sss.shop.repository.UserRepository;
+
+/**
+ * 会員管理 登録機能(運用管理者、システム管理者)のコントローラークラス
+ * 
+ * 
+ *
+ */
 @Controller
 public class UserRegistCustomerController {
+
+	/**
+	 * 会員情報
+	 */
+	@Autowired
+	UserRepository userRepository;
+
+	@Autowired
+	HttpSession session;
+
+	/**
+	 * 会員情報入力画面表示処理
+	 *
+	 * @param Model Viewとの値受渡し
+	 * @return "user/regist/user_regist_input_admin" 会員情報 登録入力画面へ
+	 */
 	@RequestMapping(path="/user/regist/input",method = RequestMethod.GET)
 	public String registInput(Model model) {
+		if (!model.containsAttribute("userForm")) {
+			UserForm userForm = new UserForm();
+			UserBean user = (UserBean) session.getAttribute("user");
+			
+			model.addAttribute("userForm", userForm);
+		}
+		return "user/regist/user_regist_input";
+	}
+	/**
+	 * 会員情報登録確認処理
+	 *
+	 * @param form   会員情報フォーム
+	 * @param result 入力チェック結果
+	 * @return 入力値エラーあり："user/regist/user_regist_input" 会員情報登録画面へ
+	 *         入力値エラーなし："user/regist/user_regist_check" 会員情報 登録確認画面へ
+	 */
+	@RequestMapping(path="/user/regist/check",method = RequestMethod.POST)
+	public String registCheck(@Valid @ModelAttribute UserForm form,BindingResult result) {
+		// 入力値にエラーがあった場合、会員情報 入力画面表示処理に戻る
+		if(result.hasErrors()) {
+			return "user/regist/user_regist_input";
+		}
 		return "user/regist/user_regist_input";
 	}
 }
