@@ -28,42 +28,49 @@ public class BasketCustomerController {
 	
 	@RequestMapping(path="/basket/add", method=RequestMethod.POST)
 	public String addItem(Model model, HttpSession session, BasketForm basketForm) {
-			int id =  basketForm.getId();
-			Item item = itemRepository.getById(id);
-			List<BasketBean> basketBeanList = (List<BasketBean>) session.getAttribute("basketBeanList");
-			BasketBean basketBean = new BasketBean(id, item.getName(), item.getStock());
-			boolean isBasketListExistId = false;
-			boolean isStockGreaterThanOrderNum = true;
-			
-			if(basketBeanList.isEmpty()) {
-				basketBeanList.add(basketBean);
-				model.addAttribute("basket", basketBean);
-			}else {
-				int cnt = 0;
-				for(BasketBean basketBeanCol : basketBeanList) {
-					if(basketBeanCol.getId() == basketBean.getId()) {
-						
-						if(basketBeanCol.getStock() > basketBeanCol.getOrderNum()) {
-							int getOrderNum  = basketBeanCol.getOrderNum() + 1;
-							basketBeanList.get(cnt).setOrderNum(getOrderNum);
-						}else {
-							isStockGreaterThanOrderNum = false;
-						}
-						model.addAttribute("basket", basketBeanCol);
-						isBasketListExistId = false;
-						break;
+		//ログインしていなかったらログイン画面に遷移する
+		if(session.getAttribute("user") == null) {
+			return "redirect:/login";
+		}
+		
+		//初期値設定
+		int id =  basketForm.getId();
+		Item item = itemRepository.getById(id);
+		List<BasketBean> basketBeanList = (List<BasketBean>) session.getAttribute("basketBeanList");
+		BasketBean basketBean = new BasketBean(id, item.getName(), item.getStock());
+		boolean isBasketListExistId = false;
+		boolean isStockGreaterThanOrderNum = true;
+		
+		//sessionの買い物かごリストが空かどうか判定
+		if(basketBeanList.isEmpty()) {
+			basketBeanList.add(basketBean);
+			model.addAttribute("basket", basketBean);
+		}else {
+			int cnt = 0;
+			for(BasketBean basketBeanCol : basketBeanList) {
+				if(basketBeanCol.getId() == basketBean.getId()) {
+					
+					if(basketBeanCol.getStock() > basketBeanCol.getOrderNum()) {
+						int getOrderNum  = basketBeanCol.getOrderNum() + 1;
+						basketBeanList.get(cnt).setOrderNum(getOrderNum);
 					}else {
-						isBasketListExistId = true;
+						isStockGreaterThanOrderNum = false;
 					}
-					cnt++;
+					model.addAttribute("basket", basketBeanCol);
+					isBasketListExistId = false;
+					break;
+				}else {
+					isBasketListExistId = true;
 				}
+				cnt++;
 			}
-			if(isBasketListExistId == true) {
-				basketBeanList.add(basketBean);
-				model.addAttribute("basket", basketBean);
-			}
-			model.addAttribute("isStockGreaterThanOrderNum", isStockGreaterThanOrderNum);
-			session.setAttribute("basketBeanList", basketBeanList);
+		}
+		if(isBasketListExistId == true) {
+			basketBeanList.add(basketBean);
+			model.addAttribute("basket", basketBean);
+		}
+		model.addAttribute("isStockGreaterThanOrderNum", isStockGreaterThanOrderNum);
+		session.setAttribute("basketBeanList", basketBeanList);
 		return "forward:/basket/list";
 	}
 	
