@@ -9,7 +9,7 @@
 
 		<h2 class="title">商品一覧</h2>
 		
-		<div class="sorted_by" th:if="!${sortType == '2'}">
+		<div class="sorted_by" th:if="!${sortType == '2'}" th:unless="${#lists.isEmpty(items)}">
 			<span>
 				新着順
 			</span>
@@ -17,7 +17,7 @@
 				売れ筋順
 			</a></span>
 		</div>
-		<div class="sorted_by" th:if="${sortType == '2'}">
+		<div class="sorted_by" th:if="!${sortType != '2'}" th:unless="${#lists.isEmpty(items)}">
 			<span><a href="/shared_shop/item/list/1">
 				新着順
 			</a></span>

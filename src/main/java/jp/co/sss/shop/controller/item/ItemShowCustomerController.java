@@ -9,7 +9,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import jp.co.sss.shop.entity.Category;
 import jp.co.sss.shop.entity.Item;
 import jp.co.sss.shop.repository.ItemRepository;
 import jp.co.sss.shop.repository.OrderItemRepository;
@@ -74,16 +73,30 @@ public class ItemShowCustomerController {
 		
 		return "item/detail/item_detail";
 	}
-	
-	@RequestMapping(path = "/item/list/category/1")
-	public String showItemCategory(Integer categoryId, Model model) {
-		Category category = new Category();
-		category.setId(categoryId);
-		List<Item> item = itemRepository.findByDeleteFlagAndCategory(0, category);
+
+	@RequestMapping(path = "/item/list/category/{sortType}")
+	public String showItemListCategory(@PathVariable int sortType, Integer categoryId, Model model) {
+		List<Integer> itemIdSort = new ArrayList<>();
+		if (sortType == 1) {
+			itemIdSort = itemRepository.findIdOrderByInsertDateDescWithQuery();
+		} else {
+			itemIdSort = orderItemRepository.findIdSUMDescWithQuery();
+			model.addAttribute("sortType", "2");
+		}
+		List<Integer> itemIdCategory = itemRepository.findIdByCategoryWithQuery(categoryId);
+		List<Item> item = new ArrayList<>();
+		for (Integer idSort : itemIdSort) {
+			for (Integer idCategory : itemIdCategory) {
+				if (idSort == idCategory) {
+					item.add(itemRepository.getById(idSort));
+					break;
+				}
+			}
+		}
 		model.addAttribute("items", item);
+		model.addAttribute("categoryId", categoryId);
 		
 		return "item/list/item_list";
 	}
 
-	
 }
