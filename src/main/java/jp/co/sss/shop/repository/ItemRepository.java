@@ -17,7 +17,9 @@ import jp.co.sss.shop.entity.Item;
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Integer> {
 
-
+	@Query("SELECT i.id FROM Item i WHERE i.deleteFlag = 0 ORDER BY i.id ASC")
+	public List<Integer> findIdWithQuery();
+	
 	/**  商品情報を新着順で検索*/
 	public List<Item> findByDeleteFlagOrderByInsertDateDescIdAsc(int deleteFlag);
 	

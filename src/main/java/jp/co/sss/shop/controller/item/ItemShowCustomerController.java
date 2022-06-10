@@ -41,10 +41,16 @@ public class ItemShowCustomerController {
 	 */
 	@RequestMapping(path = "/")
 	public String index(Model model) {
-		List<Integer> itemId = orderItemRepository.findIdSUMDescWithQuery();
+		List<Integer> itemIdSort = orderItemRepository.findIdSUMDescWithQuery();
+		List<Integer> itemIdStock = itemRepository.findIdWithQuery();
 		List<Item> item = new ArrayList<>();
-		for (Integer id : itemId) {
-			item.add(itemRepository.getById(id));
+		for (Integer idSort : itemIdSort) {
+			for (Integer idStock : itemIdStock) {
+				if (idSort == idStock) {
+					item.add(itemRepository.getById(idSort));
+					break;
+				}
+			}
 		}
 		model.addAttribute("items", item);
 		return "index";
@@ -55,10 +61,16 @@ public class ItemShowCustomerController {
 		if (sortType == 1) {
 			model.addAttribute("items", itemRepository.findByDeleteFlagOrderByInsertDateDescIdAsc(0));
 		} else {
-			List<Integer> itemId = orderItemRepository.findIdSUMDescWithQuery();
+			List<Integer> itemIdSort = orderItemRepository.findIdSUMDescWithQuery();
+			List<Integer> itemIdStock = itemRepository.findIdWithQuery();
 			List<Item> item = new ArrayList<>();
-			for (Integer id : itemId) {
-				item.add(itemRepository.getById(id));
+			for (Integer idSort : itemIdSort) {
+				for (Integer idStock : itemIdStock) {
+					if (idSort == idStock) {
+						item.add(itemRepository.getById(idSort));
+						break;
+					}
+				}
 			}
 			model.addAttribute("items", item);
 			model.addAttribute("sortType", "2");
