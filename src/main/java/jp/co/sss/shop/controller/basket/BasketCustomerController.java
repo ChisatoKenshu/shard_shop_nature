@@ -1,5 +1,6 @@
 package jp.co.sss.shop.controller.basket;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -20,8 +21,22 @@ public class BasketCustomerController {
 	@Autowired
 	ItemRepository itemRepository;
 	
-	@RequestMapping("/basket/list")
-	public String basketList(Model model) {
+	@RequestMapping(path="/basket/list", method=RequestMethod.GET)
+	public String basketListGet(HttpSession session, Model model) {
+		//ログインしていなかったらログイン画面に遷移する
+		if(session.getAttribute("user") == null) {
+			return "redirect:/login";
+		}
+		model.addAttribute("isStockGreaterThanOrderNum", true);
+		return "basket/shopping_basket";
+	}
+	
+	@RequestMapping(path="/basket/list", method=RequestMethod.POST)
+	public String basketList(HttpSession session, Model model) {
+		//ログインしていなかったらログイン画面に遷移する
+		if(session.getAttribute("user") == null) {
+			return "redirect:/login";
+		}
 		model.addAttribute("isStockGreaterThanOrderNum", true);
 		return "basket/shopping_basket";
 	}
@@ -36,16 +51,20 @@ public class BasketCustomerController {
 		//初期値設定
 		int id =  basketForm.getId();
 		Item item = itemRepository.getById(id);
-		List<BasketBean> basketBeanList = (List<BasketBean>) session.getAttribute("basketBeanList");
+		List<BasketBean> nowBasketBeanList = (List<BasketBean>) session.getAttribute("basketBeanList");
+		List<BasketBean> basketBeanList = new ArrayList<BasketBean>();
 		BasketBean basketBean = new BasketBean(id, item.getName(), item.getStock());
 		boolean isBasketListExistId = false;
 		boolean isStockGreaterThanOrderNum = true;
 		
-		//sessionの買い物かごリストが空かどうか判定
-		if(basketBeanList.isEmpty()) {
+		//sessionの買い物かごリストがnull or 空かどうか判定
+		if(nowBasketBeanList == null || nowBasketBeanList.isEmpty()) {
+			session.setAttribute("basketBeanList", basketBeanList);
 			basketBeanList.add(basketBean);
 			model.addAttribute("basket", basketBean);
 		}else {
+			//nullじゃないとき
+			basketBeanList = nowBasketBeanList;
 			int cnt = 0;
 			for(BasketBean basketBeanCol : basketBeanList) {
 				if(basketBeanCol.getId() == basketBean.getId()) {
@@ -85,6 +104,7 @@ public class BasketCustomerController {
 				int getOrderNum  = basketBeanCol.getOrderNum();
 				if(getOrderNum == 1) {
 					basketBeanList.remove(cnt);
+					
 				}else {
 					getOrderNum--;
 					basketBeanList.get(cnt).setOrderNum(getOrderNum);

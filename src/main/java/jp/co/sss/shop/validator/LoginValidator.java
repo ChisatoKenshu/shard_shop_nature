@@ -1,8 +1,5 @@
 package jp.co.sss.shop.validator;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -12,7 +9,6 @@ import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import jp.co.sss.shop.annotation.LoginCheck;
-import jp.co.sss.shop.bean.BasketBean;
 import jp.co.sss.shop.bean.UserBean;
 import jp.co.sss.shop.entity.User;
 import jp.co.sss.shop.repository.UserRepository;
@@ -57,9 +53,6 @@ public class LoginValidator implements ConstraintValidator<LoginCheck, Object> {
 
 			// セッションスコープにログインしたユーザの情報を登録
 			session.setAttribute("user", userBean);
-			
-			List<BasketBean> basketBeanList = new ArrayList<BasketBean>();
-			session.setAttribute("basketBeanList", basketBeanList);
 			
 			return true;
 		}
