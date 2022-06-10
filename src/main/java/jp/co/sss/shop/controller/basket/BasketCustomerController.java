@@ -21,7 +21,7 @@ public class BasketCustomerController {
 	ItemRepository itemRepository;
 	
 	@RequestMapping("/basket/list")
-	public String showBasket() {
+	public String showBasket(HttpSession session) {
 		return "basket/shopping_basket";
 	}
 	

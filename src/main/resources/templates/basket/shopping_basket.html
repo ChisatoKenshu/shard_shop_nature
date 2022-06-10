@@ -9,18 +9,32 @@
 
 		<h2 class="title">買い物かご</h2>
 		<div th:if="${#lists.isEmpty(session.basketBeanList)}">
-			<p th:text="#{itemList.none}"></p>
+			<p th:text="#{basketList.none}"></p>
 		</div>
 		<table class="list_table basket" th:if="!${#lists.isEmpty(session.basketBeanList)}">
 			<tr>
 				<th>商品名</th>
-				<th>stock</th>
 				<th>数</th>
+				<th>操作</th>
+				<th>在庫</th>
 			</tr>
 			<!--/* 商品情報 */-->
 			<tr th:each="basketBean: ${session.basketBeanList}">
-				<td th:text="${basketBean.name}"></td>
-				<td th:text="${basketBean.stock}"></td>
+				<td><a th:href="@{/item/detail/} + ${basketBean.id}">[[${basketBean.name}]]</a></td>
+				<th:block th:if="${basketBean.stock} == 0">
+					<td>在庫なし</td>
+				</th:block>
+				<th:block th:if="${basketBean.stock &gt;= 1 && basketBean.stock &lt;= 5}">
+					<td th:text="${basketBean.stock}"></td>
+				</th:block> 
+				<th:block th:if="${basketBean.stock} &gt;= 6">
+					<td>在庫あり</td>
+				</th:block>
+				<td>
+					<form th:action="@{/}" method="post">
+						<input type="submit" value="削除">
+					</form>
+				</td>
 				<td th:text="${basketBean.orderNum}"></td>
 			</tr>
 		</table>
