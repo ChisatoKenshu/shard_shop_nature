@@ -3,6 +3,7 @@ package jp.co.sss.shop.controller.user;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import jp.co.sss.shop.bean.UserBean;
+import jp.co.sss.shop.entity.User;
 import jp.co.sss.shop.form.UserForm;
 import jp.co.sss.shop.repository.UserRepository;
 
@@ -49,6 +51,19 @@ public class UserRegistCustomerController {
 		}
 		return "user/regist/user_regist_input";
 	}
+	
+	/**
+	 * POSTメソッドを利用して会員情報入力画面に戻る処理
+	 * 
+	 * @param form 会員情報
+	 * @return "user/regist/user_regist_input_admin" 会員情報 登録入力画面へ
+	 */
+	@RequestMapping(path = "/user/regist/input", method = RequestMethod.POST)
+	public String registInputBack(UserForm form) {
+
+		return "user/regist/user_regist_input";
+	}
+
 	/**
 	 * 会員情報登録確認処理
 	 *
@@ -63,6 +78,35 @@ public class UserRegistCustomerController {
 		if(result.hasErrors()) {
 			return "user/regist/user_regist_input";
 		}
-		return "user/regist/user_regist_input";
+		return "user/regist/user_regist_check";
+	}
+	/**
+	 * 会員情報登録完了画面表示
+	 *
+	 * @param form 会員情報
+	 * @return "redirect:/user/regist/user_regist_complete" 会員情報 登録完了画面へ
+	 */
+	@RequestMapping(path = "/user/regist/complete",method = RequestMethod.POST)
+	public String registComplete(@ModelAttribute UserForm form) {
+		//会員情報の生成
+		User user = new User();
+		
+		//入力値を会員情報にコピー
+		BeanUtils.copyProperties(form,user);
+		
+		userRepository.save(user);
+		
+		return "redirect:/user/regist/complete";
+	}
+	
+	/**
+	 * 会員情報登録完了画面表示
+	 *
+	 * @param form 会員情報
+	 * @return "user/regist/user_regist_complete_admin" 会員情報 登録完了画面へ
+	 */
+	@RequestMapping(path = "/user/regist/complete", method = RequestMethod.GET)
+	public String registCompleteRedirect() {
+		return "user/regist/user_regist_complete";
 	}
 }
