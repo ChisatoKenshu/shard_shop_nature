@@ -1,17 +1,20 @@
 package jp.co.sss.shop.controller.order;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import jp.co.sss.shop.bean.BasketBean;
 import jp.co.sss.shop.bean.UserBean;
 import jp.co.sss.shop.entity.Order;
 import jp.co.sss.shop.entity.OrderItem;
@@ -64,20 +67,12 @@ public class OrderRegistCustomerController {
 	 *
 	 * @return "item/regist/item_regist_complete" 商品情報 登録完了画面へ
 	 */
-	@RequestMapping(path = "/item/regist/complete", method = RequestMethod.GET)
+	@RequestMapping(path = "/order/complete", method = RequestMethod.GET)
 	public String orderComplete(@ModelAttribute OrderForm form, HttpSession session) {
-		
-		// セッションの注文情報を格納する
-		
-		List<OrderItem> orderItems = OrderRegistCustomerController.automaticCast(session.getAttribute("basketeBean"));
-
-		// Formクラス内の各フィールドの値を注文情報に追加
 		Order order = new Order();
-		order.setPostalCode(form.getPostalCode());
-		order.setAddress(form.getAddress());
-		order.setName(form.getName());
-		order.setPhoneNumber(form.getPhoneNumber());
-		order.setPayMethod(form.getPayMethod());
+		
+		// 入力値を注文情報にコピー
+		BeanUtils.copyProperties(form, order);
 		
 		// 現在の日時を注文日時として注文情報に追加
 		long nowDate = System.currentTimeMillis();
@@ -88,23 +83,31 @@ public class OrderRegistCustomerController {
 		Integer userId = ((UserBean)session.getAttribute("user")).getId();
 		order.setUser(userRepository.getById(userId));
 		
-		// 注文商品情報を注文情報に追加
+		// 空の注文商品情報を生成して注文情報に追加
+		List<OrderItem> orderItems = new ArrayList<>();
+		order.setOrderItemsList(orderItems);
 		
-		order.setOrderItemsList();
-		
-
-		
-
-		// 商品情報を保存
+		// 注文情報を保存
 		orderRepository.save(order);
+		
+		
+		
+		// セッションから注文商品情報のリストを取得
+		List<BasketBean> beans = (List<BasketBean>) session.getAttribute("basketBeanList");
+		
+		// 注文商品情報の
+		for(BasketBean bean: beans) {
+			OrderItem orderItem = new OrderItem();
+			
+		}
+
+		
+		// セッションの注文情報を格納する
+		
+		
+		
 
 		return "order/regist/order_complete";
-	}
-	
-	@SuppressWarnings("unchecked")
-	public static <T> T automaticCast(Object object) {
-	    T castedObject = (T) object;
-	    return castedObject;
 	}
 
 }
