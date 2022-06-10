@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+        th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
+<head>
+<title>買い物かご | シェアードショップ</title>
+<meta charset="UTF-8" />
+</head>
+<body>
+
+		<h2 class="title">買い物かご</h2>
+		<div th:if="${#lists.isEmpty(session.basketBeanList)}">
+			<p th:text="#{basketList.none}"></p>
+		</div>
+		<div th:unless="${isStockGreaterThanOrderNum}">
+			<p th:text="${basket.name} + #{basketList.itemStockNone}" style="color: red"></p>
+		</div>
+		<table class="list_table basket" th:if="!${#lists.isEmpty(session.basketBeanList)}">
+			<tr>
+				<th>商品名</th>
+				<th>在庫</th>
+				<th>操作</th>
+				<th>数</th>
+			</tr>
+			<!--/* 商品情報 */-->
+			<tr th:each="basketBean: ${session.basketBeanList}">
+				<td><a th:href="@{/item/detail/} + ${basketBean.id}">[[${basketBean.name}]]</a></td>
+				<td th:text="${basketBean.orderNum}"></td>
+				<td>
+					<form th:action="@{/basket/delete}" method="post">
+						<input type="hidden" name="id" th:value="${basketBean.id}">
+						<input type="submit" value="削除" class="delete">
+					</form>
+				</td>
+				<th:block th:if="${basketBean.stock} == 0">
+					<td>在庫なし</td>
+				</th:block>
+				<th:block th:if="${basketBean.stock &gt;= 1 && basketBean.stock &lt;= 5}">
+					<td th:text="${basketBean.stock}"></td>
+				</th:block> 
+				<th:block th:if="${basketBean.stock} &gt;= 6">
+					<td>在庫あり</td>
+				</th:block>
+			</tr>
+		</table>
+		<div class="user_info_form_area" th:if="!${#lists.isEmpty(session.basketBeanList)}">
+			<form class="basket" th:action="@{/address/input}" method="post">
+				<input type="submit" value="ご注文のお手続き">
+			</form>
+			<form class="basket" th:action="@{/basket/allDelete}" method="post">
+				<input type="submit" value="買い物かごを空にする" class="delete">
+			</form>
+		</div>
+
+		
+
+</body>
+</html>
