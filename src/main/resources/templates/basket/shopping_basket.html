@@ -34,12 +34,21 @@
 					<td>在庫あり</td>
 				</th:block>
 				<td>
-					<form th:action="@{/}" method="post">
+					<form class="delete" th:action="@{/basket/delete}" method="post">
+						<input type="hidden" name="id" th:value="${basketBean.id}">
 						<input type="submit" value="削除">
 					</form>
 				</td>
 				<td th:text="${basketBean.orderNum}"></td>
 			</tr>
 		</table>
+		
+		<form class="basket" th:action="@{/address/input}" method="post">
+			<input type="submit" value="ご注文のお手続き">
+		</form>
+		
+		<form class="basket" th:action="@{/basket/allDelete}" method="post">
+			<input type="submit" value="買い物かごを空にする">
+		</form>
 </body>
 </html>

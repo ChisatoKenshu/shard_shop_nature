@@ -21,12 +21,13 @@ public class BasketCustomerController {
 	ItemRepository itemRepository;
 	
 	@RequestMapping("/basket/list")
-	public String showBasket(HttpSession session) {
+	public String basketList(Model model) {
+		model.addAttribute("isStockGreaterThanOrderNum", true);
 		return "basket/shopping_basket";
 	}
 	
 	@RequestMapping(path="/basket/add", method=RequestMethod.POST)
-	public String addBasket(Model model, HttpSession session, BasketForm basketForm) {
+	public String addItem(Model model, HttpSession session, BasketForm basketForm) {
 			int id =  basketForm.getId();
 			Item item = itemRepository.getById(id);
 			List<BasketBean> basketBeanList = (List<BasketBean>) session.getAttribute("basketBeanList");
@@ -63,6 +64,39 @@ public class BasketCustomerController {
 			}
 			model.addAttribute("isStockGreaterThanOrderNum", isStockGreaterThanOrderNum);
 			session.setAttribute("basketBeanList", basketBeanList);
-		return "basket/shopping_basket";
+		return "forward:/basket/list";
+	}
+	
+	@RequestMapping(path="/basket/delete", method=RequestMethod.POST)
+	public String deleteItem(Integer id, HttpSession session, Model model) {
+		Item item = itemRepository.getById(id);
+		List<BasketBean> basketBeanList = (List<BasketBean>) session.getAttribute("basketBeanList");
+		
+		int cnt = 0;
+		for(BasketBean basketBeanCol : basketBeanList) {
+			if(basketBeanCol.getId() == item.getId()) {
+				int getOrderNum  = basketBeanCol.getOrderNum();
+				if(getOrderNum == 1) {
+					basketBeanList.remove(cnt);
+				}else {
+					getOrderNum--;
+					basketBeanList.get(cnt).setOrderNum(getOrderNum);
+				}
+				break;
+			}
+			cnt++;
+		}
+		model.addAttribute("isStockGreaterThanOrderNum", true);
+		session.setAttribute("basketBeanList", basketBeanList);
+		return "forward:/basket/list";
+	}
+	
+	@RequestMapping(path="/basket/allDelete", method=RequestMethod.POST)
+	public String deleteAll(HttpSession session, Model model) {
+		List<BasketBean> basketBeanList = (List<BasketBean>) session.getAttribute("basketBeanList");
+		basketBeanList.clear();
+		model.addAttribute("isStockGreaterThanOrderNum", true);
+		session.setAttribute("basketBeanList", basketBeanList);
+		return "forward:/basket/list";
 	}
 }
