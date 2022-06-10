@@ -42,7 +42,12 @@ public class ItemShowCustomerController {
 	 */
 	@RequestMapping(path = "/")
 	public String index(Model model) {
-		
+		List<Integer> itemId = orderItemRepository.findIdSUMDescWithQuery();
+		List<Item> item = new ArrayList<>();
+		for (Integer id : itemId) {
+			item.add(itemRepository.getById(id));
+		}
+		model.addAttribute("items", item);
 		return "index";
 	}
 	
@@ -57,6 +62,7 @@ public class ItemShowCustomerController {
 				item.add(itemRepository.getById(id));
 			}
 			model.addAttribute("items", item);
+			model.addAttribute("sortType", "2");
 		}
 		
 		return "item/list/item_list";
