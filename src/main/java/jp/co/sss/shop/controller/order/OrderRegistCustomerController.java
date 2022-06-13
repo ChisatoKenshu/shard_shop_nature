@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import jp.co.sss.shop.bean.BasketBean;
 import jp.co.sss.shop.bean.OrderBean;
+import jp.co.sss.shop.bean.OrderItemBean;
 import jp.co.sss.shop.bean.UserBean;
 import jp.co.sss.shop.entity.Item;
 import jp.co.sss.shop.entity.Order;
@@ -115,15 +116,15 @@ public class OrderRegistCustomerController {
 	public String inputPayment(Model model, @Valid @ModelAttribute OrderForm form, BindingResult result,
 			HttpSession session) {
 
+		// 入力値を注文情報にコピー
+		OrderBean orderBean = new OrderBean();
+		BeanUtils.copyProperties(form, orderBean);
+
+		// 注文情報をViewに渡す
+		model.addAttribute("order", orderBean);
+
 		// 入力値にエラーがあった場合、届け先入力画面に戻る
 		if (result.hasErrors()) {
-
-			// 入力値を注文情報にコピー
-			OrderBean orderBean = new OrderBean();
-			BeanUtils.copyProperties(form, orderBean);
-
-			// 注文情報をViewに渡す
-			model.addAttribute("order", orderBean);
 
 			return "order/regist/order_address_input";
 		}
@@ -139,8 +140,6 @@ public class OrderRegistCustomerController {
 		form.setPayMethod(1);
 		model.addAttribute("payments", radioPayment);
 
-		
-
 		return "order/regist/order_payment_input";
 	}
 
@@ -152,23 +151,70 @@ public class OrderRegistCustomerController {
 	 */
 	@RequestMapping(path = "/order/check", method = RequestMethod.POST)
 	public String checkOrder(Model model, @Valid @ModelAttribute OrderForm form, BindingResult result,
-			HttpSession session) {
+			HttpSession session, OrderBean order) {
+
+		OrderBean orderBean = order;
+		BeanUtils.copyProperties(form, orderBean);
+
+		// 注文情報をViewに渡す
+		model.addAttribute("order", orderBean);
 
 		// 入力値にエラーがあった場合、入力画面に戻る
 		if (result.hasErrors()) {
 
-			// 入力値を注文情報にコピー
-			OrderBean orderBean = new OrderBean();
-			BeanUtils.copyProperties(form, orderBean);
-
-			// 注文情報をViewに渡す
-			model.addAttribute("order", orderBean);
-
 			return "order/regist/order_payment_input";
 		}
 
-		// セッションから注文商品情報のリストを取得
-		List<BasketBean> basketbeans = (List<BasketBean>) session.getAttribute("basketBeanList");
+		// OrderItemBean型の空のリストを作成
+		List<OrderItemBean> orderItemBeans = new ArrayList<OrderItemBean>();
+		
+		// 金額合計表示用変数
+		Integer total = 0;
+		
+		// 在庫確認用Map
+		Map<String, Integer> stockMap = new LinkedHashMap<>();
+
+		// セッションから買い物かご情報のリストを取得
+		List<BasketBean> basketBeans = (List<BasketBean>) session.getAttribute("basketBeanList");
+
+		// リスト内の商品と個数を計算して空のリストに追加していく
+		for (BasketBean bean : basketBeans) {
+			OrderItemBean orderItem = new OrderItemBean();
+			Item item = new Item();
+
+			// リスト内の商品情報を取得
+			item = itemRepository.getById(bean.getId());
+
+			// id, name, price, imageをコピー
+			BeanUtils.copyProperties(item, orderItem);
+			
+			// orderNumを設定
+			orderItem.setOrderNum(bean.getOrderNum());
+
+			// subtotalを設定しtotalに加算
+			Integer subtotal = orderItem.getPrice() * orderItem.getOrderNum();
+			orderItem.setSubtotal(subtotal);
+			total += subtotal;
+			
+			// 在庫の確認
+			Integer stock = item.getStock() - orderItem.getOrderNum();
+			if (item.getStock() == 0) {
+				stockMap.put(item.getName(), 0);
+			}else if (stock < 0) {
+				stockMap.put(item.getName(), 1);
+			}
+
+			// 注文商品情報リストに追加
+			orderItemBeans.add(orderItem);
+		}
+
+		// 注文商品情報をViewに渡す
+		model.addAttribute("orderItemBeans", orderItemBeans);
+		model.addAttribute("total", total);
+		model.addAttribute("stocks", stockMap);
+		
+
+		session.setAttribute("orderItemBeans", orderItemBeans);
 
 		return "order/regist/order_check";
 	}
@@ -178,7 +224,7 @@ public class OrderRegistCustomerController {
 	 *
 	 * @return "order/regist/order_complete" 注文完了画面へ
 	 */
-	@RequestMapping(path = "/order/complete", method = RequestMethod.GET)
+	@RequestMapping(path = "/order/complete", method = RequestMethod.POST)
 	public String orderComplete(@ModelAttribute OrderForm form, HttpSession session) {
 		Order order = new Order();
 
@@ -202,10 +248,10 @@ public class OrderRegistCustomerController {
 		orderRepository.save(order);
 
 		// セッションから注文商品情報のリストを取得
-		List<BasketBean> beans = (List<BasketBean>) session.getAttribute("basketBeanList");
+		List<OrderItemBean> orderItemBeans = (List<OrderItemBean>) session.getAttribute("orderItemBeans");
 
 		// 注文商品情報のリストをorderItemに格納して登録
-		for (BasketBean bean : beans) {
+		for (OrderItemBean bean : orderItemBeans) {
 			OrderItem orderItem = new OrderItem();
 			Item item = new Item();
 
@@ -218,6 +264,10 @@ public class OrderRegistCustomerController {
 			orderItem.setOrder(order);
 			orderItem.setItem(item);
 			orderItem.setPrice(item.getPrice());
+			
+			// 商品の在庫を変更
+			item.setStock(item.getStock() - orderItem.getQuantity());
+			itemRepository.save(item);
 
 			// 注文商品情報をリポジトリに保存する
 			orderItemRepository.save(orderItem);
@@ -228,6 +278,10 @@ public class OrderRegistCustomerController {
 		// 注文商品情報を上書きして保存
 		order.setOrderItemsList(orderItems);
 		orderRepository.save(order);
+		
+		List<BasketBean> basketBeanList = (List<BasketBean>) session.getAttribute("basketBeanList");
+		basketBeanList.clear();
+		session.setAttribute("basketBeanList", basketBeanList);
 
 		return "order/regist/order_complete";
 	}

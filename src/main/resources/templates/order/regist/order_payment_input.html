@@ -25,6 +25,10 @@
 						th:checked="${payment.key == 1}" />
 				<span class="error_message"></span>
 			</div>
+			<input type="hidden" name="postalCode" th:value="${order.postalCode}" />
+			<input type="hidden" name="address" th:value="${order.address}" />
+			<input type="hidden" name="name" th:value="${order.name}" />
+			<input type="hidden" name="phoneNumber" th:value="${order.phoneNumber}" />
 			<input type="submit" value="次へ" class="send_button" />
 		</form>
 		<form th:action="@{/adress/input}" method="get">
