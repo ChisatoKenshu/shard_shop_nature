@@ -16,17 +16,15 @@
 					th:class="error_list"></li>
 			</ul>
 
-			<ul class="input_list">
-
-				<li th:each="payment : ${payments}"><label> <span class="input_title"></span>
-				 <input
-						type="radio"
+			<div th:each="payment : ${payments}">
+				<span class="input_title"></span>
+				<input type="radio"
 						name="payMethod"
-						th:value="${radioPaymentsMap.key}"
-						th:text="${radioPaymentsMap.value}"
-						th:field="*{payment}" />
-				</label> <span class="error_message"></span></li>
-			</ul>
+						th:value="${payment.key}"
+						th:text="${payment.value}"
+						th:checked="${payment.key == 1}" />
+				<span class="error_message"></span>
+			</div>
 			<input type="submit" value="次へ" class="send_button" />
 		</form>
 		<form th:action="@{/adress/input}" method="get">
