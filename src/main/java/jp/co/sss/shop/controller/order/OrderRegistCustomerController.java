@@ -6,19 +6,24 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import jp.co.sss.shop.bean.BasketBean;
+import jp.co.sss.shop.bean.OrderBean;
 import jp.co.sss.shop.bean.UserBean;
 import jp.co.sss.shop.entity.Item;
 import jp.co.sss.shop.entity.Order;
 import jp.co.sss.shop.entity.OrderItem;
+import jp.co.sss.shop.entity.User;
 import jp.co.sss.shop.form.OrderForm;
 import jp.co.sss.shop.repository.ItemRepository;
 import jp.co.sss.shop.repository.OrderItemRepository;
@@ -62,11 +67,78 @@ public class OrderRegistCustomerController {
 	 */
 	@Autowired
 	public OrderRepository orderRepository;
+	
+	/**
+	 * 届け先情報入力処理
+	 *
+	 * @param model Viewとの値受渡し
+	 * @return "item/update/item_update_input" カテゴリ情報 変更入力画面へ
+	 */
+	@RequestMapping(path = "address/input", method = RequestMethod.POST)
+	public String updateInput(boolean backFlg, Model model, @ModelAttribute OrderForm form, HttpSession session) {
+
+		// 戻るボタンで遷移してきたか判定
+		if (!backFlg) {
+			
+			// ユーザ情報を取得
+			Integer userId = ((UserBean)session.getAttribute("user")).getId();
+			User user = userRepository.getById(userId);
+			
+			// 届け先情報を生成し、name,postalCode,address,phoneNumberをコピー
+			OrderBean orderBean = new OrderBean();
+			BeanUtils.copyProperties(user, orderBean);
+
+			// 届け先情報をViewに渡す
+			model.addAttribute("order", orderBean);
+
+		} else {
+		
+			// 届け先情報の生成
+			OrderBean orderBean = new OrderBean();
+			BeanUtils.copyProperties(form, orderBean);
+
+			// 届け先情報をViewに渡す
+			model.addAttribute("order", orderBean);
+		}
+		return "order/regist/order_address_input";
+	}
+	
+	/**
+	 * 注文内容確認処理
+	 *
+	 * @param form 届け先情報, 支払情報
+	 * @return "order/check" 注文情報確認画面へ
+	 */
+	@RequestMapping(path = "/order/check", method = RequestMethod.POST)
+	public String checkOrder( Model model,@Valid @ModelAttribute OrderForm form, BindingResult result, HttpSession session) {
+
+		// 入力値にエラーがあった場合、入力画面に戻る
+		if (result.hasErrors()) {
+
+
+			// 入力値を注文情報にコピー
+			OrderBean orderBean = new OrderBean();
+			BeanUtils.copyProperties(form, orderBean);
+
+			// 注文情報をViewに渡す
+			model.addAttribute("order", orderBean);
+
+			return "order/regist/order_payment_input";
+		}
+		
+		// セッションから注文商品情報のリストを取得
+		List<BasketBean> basketbeans = (List<BasketBean>) session.getAttribute("basketBeanList");
+		
+		
+		
+
+		return "order/regist/order_check";
+	}
 
 	/**
 	 * 商品情報登録完了画面
 	 *
-	 * @return "item/regist/item_regist_complete" 商品情報 登録完了画面へ
+	 * @return "order/regist/order_complete" 注文完了画面へ
 	 */
 	@RequestMapping(path = "/order/complete", method = RequestMethod.GET)
 	public String orderComplete(@ModelAttribute OrderForm form, HttpSession session) {
