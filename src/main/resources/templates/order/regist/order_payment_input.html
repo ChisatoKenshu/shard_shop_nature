@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
+<head>
+<title>お支払い方法選択 | シェアードショップ</title>
+<meta charset="UTF-8" />
+</head>
+<body class="payment_regist">
+	<h2 class="title">お支払い方法選択</h2>
+	<div class="payment_info_form_area">
+		<form th:action="@{/order/check}" enctype="multipart/form-data"
+			method="post" class="payment_info_form" th:object="${orderForm}">
+
+			<ul th:if="${#fields.hasErrors('*')}" th:class="input_list">
+				<li th:each="err : ${#fields.errors('*')}" th:text="${err}"
+					th:class="error_list"></li>
+			</ul>
+
+			<div th:each="payment : ${payments}">
+				<span class="input_title"></span>
+				<input type="radio"
+						name="payMethod"
+						th:value="${payment.key}"
+						th:text="${payment.value}"
+						th:checked="${payment.key == 1}" />
+				<span class="error_message"></span>
+			</div>
+			<input type="hidden" name="postalCode" th:value="${order.postalCode}" />
+			<input type="hidden" name="address" th:value="${order.address}" />
+			<input type="hidden" name="name" th:value="${order.name}" />
+			<input type="hidden" name="phoneNumber" th:value="${order.phoneNumber}" />
+			<input type="submit" value="次へ" class="send_button" />
+		</form>
+		<form th:action="@{/adress/input}" method="get">
+			<input type="submit" value="戻る" class="back_button" />
+		</form>
+	</div>
+</body>
+</html>
