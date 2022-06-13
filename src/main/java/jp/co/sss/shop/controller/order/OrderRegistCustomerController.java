@@ -259,7 +259,6 @@ public class OrderRegistCustomerController {
 			item = itemRepository.getById(bean.getId());
 
 			// orderItemの情報を設定
-			orderItem.setId(item.getId());
 			orderItem.setQuantity(bean.getOrderNum());
 			orderItem.setOrder(order);
 			orderItem.setItem(item);
