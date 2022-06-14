@@ -23,7 +23,7 @@ public class Favorite {
 	private User user;
 	
 	@Column
-	private Integer isfav;
+	private Integer isFav;
 
 	public Item getItem() {
 		return item;
@@ -41,11 +41,11 @@ public class Favorite {
 		this.user = user;
 	}
 
-	public Integer getIsfav() {
-		return isfav;
+	public Integer getIsFav() {
+		return isFav;
 	}
 
-	public void setIsfav(Integer isfav) {
-		this.isfav = isfav;
+	public void setIsFav(Integer isFav) {
+		this.isFav = isFav;
 	}
 }

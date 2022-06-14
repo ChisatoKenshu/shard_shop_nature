@@ -25,7 +25,9 @@ import jp.co.sss.shop.repository.UserRepository;
 public class FavoriteCustomerController {
 	@Autowired
 	private ItemRepository itemRepository;
+	@Autowired
 	private UserRepository userRepository;
+	@Autowired
 	private FavoriteRepository favoriteRepository;
 	
 	@RequestMapping(path="/item/favorite", method=RequestMethod.POST)
@@ -41,7 +43,7 @@ public class FavoriteCustomerController {
 			Favorite favorite = new Favorite();
 			favorite.setItem(itemRepository.getById(Integer.parseInt(favBean.getItemId())));
 			favorite.setUser(userRepository.getById(userBean.getId()));
-			favorite.setIsfav(Integer.parseInt(favBean.getValue()));
+			favorite.setIsFav(Integer.parseInt(favBean.getValue()));
 			System.out.println("\n\n\n\n\n\n\n\n\nitemid:" + favorite.getItem());
 			
 			favoriteRepository.save(favorite);
