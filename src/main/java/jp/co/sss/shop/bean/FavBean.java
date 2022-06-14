@@ -1,25 +1,18 @@
 package jp.co.sss.shop.bean;
 
 public class FavBean {
-	private Integer itemId;
-	private Integer userId;
-	private Integer isFav;
-	public Integer getItemId() {
+	private String itemId;
+	private String isFav;
+	public String getItemId() {
 		return itemId;
 	}
-	public void setItemId(Integer itemId) {
+	public void setItemId(String itemId) {
 		this.itemId = itemId;
 	}
-	public Integer getUserId() {
-		return userId;
-	}
-	public void setUserId(Integer userId) {
-		this.userId = userId;
-	}
-	public Integer getIsFav() {
+	public String getIsFav() {
 		return isFav;
 	}
-	public void setIsFav(Integer isFav) {
+	public void setIsFav(String isFav) {
 		this.isFav = isFav;
 	}
 

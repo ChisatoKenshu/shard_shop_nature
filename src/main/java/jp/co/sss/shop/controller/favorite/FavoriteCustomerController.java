@@ -35,12 +35,14 @@ public class FavoriteCustomerController {
 			UserBean userBean = (UserBean) session.getAttribute("user");
 			
 			Favorite favorite = new Favorite();
-			favorite.setItemId(favBean.getItemId());
+			favorite.setItemId(Integer.parseInt(favBean.getItemId()));
 			favorite.setUserId(userBean.getId());
-			favorite.setIsFav(favBean.getIsFav());
+			favorite.setIsFav(Integer.parseInt(favBean.getIsFav()));
 			
 			favoriteRepository.save(favorite);
-			
+			System.out.println("\n\n\n\n\n\n\n\nfav ItemId:" + favorite.getItemId());
+			System.out.println("Userid:" + favorite.getUserId());
+			System.out.println("fav:" + favorite.getIsFav());
 		} catch (JsonMappingException e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();

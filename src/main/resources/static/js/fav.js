@@ -10,8 +10,8 @@ $(function() {
 	favForm.on("submit", {passive: false}, function(e) {
 	    e.preventDefault();  // デフォルトのイベント(ページの遷移やデータ送信など)を無効にする
 		
-		let btnId = $('#' + $(this).children('button').attr('id'));
-		console.log("ボタンのid:" + btnId.val());
+		var btnId = $('#' + $(this).children('button').attr('id'));
+		
 		
 		/* inputのvalueが0の時valueを1にしてボタンのカラー変更 */
 		if(btnId.val() == 0){
@@ -21,11 +21,12 @@ $(function() {
 			btnId.css('background-color','');
 			btnId.val(0);
 		}
-		
+		console.log("ボタンのval:" + btnId.val());
+		console.log("itemId:" + btnId.attr('id'));
 		/* bookId,valueをjson形式にする */
 		let json = {
 			itemId: btnId.attr('id'),
-			value: btnId.val()
+			isFav: btnId.val()
 		}
 	
 	    $.ajax({

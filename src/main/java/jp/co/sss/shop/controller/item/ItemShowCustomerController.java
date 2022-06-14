@@ -65,9 +65,11 @@ public class ItemShowCustomerController {
 	
 	@RequestMapping(path = "/item/list/{sortType}")
 	public String showItemList(@PathVariable int sortType, Model model, HttpSession session) {
-		UserBean userBean = (UserBean) session.getAttribute("user");
-		List<Favorite> favorites = favoriteRepository.findByUserId(userBean.getId());
-		model.addAttribute("favorites", favorites);
+		if(session.getAttribute("user") != null) {
+			UserBean userBean = (UserBean) session.getAttribute("user");
+			List<Favorite> favorites = favoriteRepository.findByUserIdOrderByItemId(userBean.getId());
+			model.addAttribute("favorites", favorites);	
+		}
 		if (sortType == 1) {
 			model.addAttribute("items", itemRepository.findByDeleteFlagOrderByInsertDateDescIdAsc(0));
 		} else {
@@ -98,10 +100,12 @@ public class ItemShowCustomerController {
 
 	@RequestMapping(path = "/item/list/category/{sortType}")
 	public String showItemListCategory(@PathVariable int sortType, Integer categoryId, Model model, HttpSession session) {
+		if(session.getAttribute("user") != null) {
+			UserBean userBean = (UserBean) session.getAttribute("user");
+			List<Favorite> favorites = favoriteRepository.findByUserIdOrderByItemId(userBean.getId());
+			model.addAttribute("favorites", favorites);	
+		}
 		List<Integer> itemIdSort = new ArrayList<>();
-		UserBean userBean = (UserBean) session.getAttribute("user");
-		List<Favorite> favorites = favoriteRepository.findByUserId(userBean.getId());
-		model.addAttribute("favorites", favorites);
 		if (sortType == 1) {
 			itemIdSort = itemRepository.findIdOrderByInsertDateDescWithQuery();
 		} else {

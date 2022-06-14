@@ -8,5 +8,5 @@ import jp.co.sss.shop.entity.Favorite;
 import jp.co.sss.shop.entity.FavoriteKey;
 
 public interface FavoriteRepository extends JpaRepository<Favorite, FavoriteKey> {
-	List<Favorite> findByUserId(Integer userId);
+	List<Favorite> findByUserIdOrderByItemId(Integer userId);
 }

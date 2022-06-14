@@ -51,9 +51,16 @@
 				<td th:text="${item.price}"></td>
 				<td th:text="${item.category.name}"></td>
 				<td>
-					<form th:action="@{/item/favorite}" method="post" class="fav_form">
-						<button type="submit" th:id="${item.id}" th:value="${favorites.get(st.index).isFav}">☆</button>
-					</form>
+					<th:block th:if="${session.user != null}">
+						<form th:action="@{/item/favorite}" method="post" class="fav_form">
+							<button type="submit" th:id="${item.id}" th:value="${favorites.get(item.id - 1).isFav}">☆</button>
+						</form>
+					</th:block>
+					<th:block th:if="#{session.user == null}">
+						<form th:action="@{/login}">
+							<input type="submit" value="☆">
+						</form>
+					</th:block>
 				</td>
 			</tr>
 		</table>
