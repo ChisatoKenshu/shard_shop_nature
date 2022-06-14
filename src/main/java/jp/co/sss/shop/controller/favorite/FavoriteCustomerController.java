@@ -18,15 +18,9 @@ import jp.co.sss.shop.bean.FavBean;
 import jp.co.sss.shop.bean.UserBean;
 import jp.co.sss.shop.entity.Favorite;
 import jp.co.sss.shop.repository.FavoriteRepository;
-import jp.co.sss.shop.repository.ItemRepository;
-import jp.co.sss.shop.repository.UserRepository;
 
 @Controller
 public class FavoriteCustomerController {
-	@Autowired
-	private ItemRepository itemRepository;
-	@Autowired
-	private UserRepository userRepository;
 	@Autowired
 	private FavoriteRepository favoriteRepository;
 	
@@ -41,9 +35,9 @@ public class FavoriteCustomerController {
 			UserBean userBean = (UserBean) session.getAttribute("user");
 			
 			Favorite favorite = new Favorite();
-			favorite.setItemId(Integer.parseInt(favBean.getItemId()));
+			favorite.setItemId(favBean.getItemId());
 			favorite.setUserId(userBean.getId());
-			favorite.setIsFav(Integer.parseInt(favBean.getValue()));
+			favorite.setIsFav(favBean.getIsFav());
 			
 			favoriteRepository.save(favorite);
 			

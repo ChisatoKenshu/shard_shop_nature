@@ -1,17 +1,17 @@
 $(function() {
-	var favForm = $(".fav_form");
+	let favForm = $(".fav_form");
 	$("button").each(function(i, btn){
-		var btnId = $("#" + $(btn).attr("id"));
+		let btnId = $("#" + $(btn).attr("id"));
 		if(btnId.val() == 1){
 			btnId.css('background-color','yellow');
-			console.log("ボタンカラー変更　　:" + btnId);
+			console.log("ボタンカラー変更　　:" + btnId.val());
 		}
 	})
 	favForm.on("submit", {passive: false}, function(e) {
 	    e.preventDefault();  // デフォルトのイベント(ページの遷移やデータ送信など)を無効にする
 		
 		let btnId = $('#' + $(this).children('button').attr('id'));
-		console.log("ボタンのid:" + btnId.attr('id'));
+		console.log("ボタンのid:" + btnId.val());
 		
 		/* inputのvalueが0の時valueを1にしてボタンのカラー変更 */
 		if(btnId.val() == 0){
@@ -23,7 +23,7 @@ $(function() {
 		}
 		
 		/* bookId,valueをjson形式にする */
-		var json = {
+		let json = {
 			itemId: btnId.attr('id'),
 			value: btnId.val()
 		}
