@@ -4,8 +4,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -13,32 +11,28 @@ import javax.persistence.Table;
 @IdClass(value=FavoriteKey.class)
 public class Favorite {
 	@Id
-	@ManyToOne
-	@JoinColumn(name = "item_id", referencedColumnName = "id")
-	private Item item;
+	private Integer itemId;
 	
 	@Id
-	@ManyToOne
-	@JoinColumn(name = "user_id", referencedColumnName = "id")
-	private User user;
+	private Integer userId;
 	
 	@Column
 	private Integer isFav;
 
-	public Item getItem() {
-		return item;
+	public Integer getItemId() {
+		return itemId;
 	}
 
-	public void setItem(Item item) {
-		this.item = item;
+	public void setItemId(Integer itemId) {
+		this.itemId = itemId;
 	}
 
-	public User getUser() {
-		return user;
+	public Integer getUserId() {
+		return userId;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 
 	public Integer getIsFav() {

@@ -3,18 +3,18 @@ package jp.co.sss.shop.entity;
 import java.io.Serializable;
 
 public class FavoriteKey implements Serializable {
-	private User user;
-	private Item item;
-	public User getUser() {
-		return user;
+	private Integer itemId;
+	private Integer userId;
+	public Integer getItemId() {
+		return itemId;
 	}
-	public void setUser(User user) {
-		this.user = user;
+	public void setItemId(Integer itemId) {
+		this.itemId = itemId;
 	}
-	public Item getItem() {
-		return item;
+	public Integer getUserId() {
+		return userId;
 	}
-	public void setItem(Item item) {
-		this.item = item;
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 }

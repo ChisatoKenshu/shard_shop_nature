@@ -41,10 +41,9 @@ public class FavoriteCustomerController {
 			UserBean userBean = (UserBean) session.getAttribute("user");
 			
 			Favorite favorite = new Favorite();
-			favorite.setItem(itemRepository.getById(Integer.parseInt(favBean.getItemId())));
-			favorite.setUser(userRepository.getById(userBean.getId()));
+			favorite.setItemId(Integer.parseInt(favBean.getItemId()));
+			favorite.setUserId(userBean.getId());
 			favorite.setIsFav(Integer.parseInt(favBean.getValue()));
-			System.out.println("\n\n\n\n\n\n\n\n\nitemid:" + favorite.getItem());
 			
 			favoriteRepository.save(favorite);
 			
