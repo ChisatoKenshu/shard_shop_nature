@@ -44,12 +44,17 @@ public class ItemShowCustomerController {
 		List<Integer> itemIdSort = orderItemRepository.findIdSUMDescWithQuery();
 		List<Integer> itemIdStock = itemRepository.findIdWithQuery();
 		List<Item> item = new ArrayList<>();
+		int cnt = 0;
 		for (Integer idSort : itemIdSort) {
 			for (Integer idStock : itemIdStock) {
 				if (idSort == idStock) {
 					item.add(itemRepository.getById(idSort));
+					cnt ++;
 					break;
 				}
+			}
+			if (cnt == 4) {
+				break;
 			}
 		}
 		model.addAttribute("items", item);
