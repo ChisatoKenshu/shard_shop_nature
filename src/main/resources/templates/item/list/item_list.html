@@ -50,6 +50,11 @@
 					th:text="${item.name}"></a></td>
 				<td th:text="${item.price}"></td>
 				<td th:text="${item.category.name}"></td>
+				<td>
+					<form  action="/item/favorite" method="post">
+						<button type="submit">☆</button>
+					</form>
+				</td>
 			</tr>
 		</table>
 </body>
