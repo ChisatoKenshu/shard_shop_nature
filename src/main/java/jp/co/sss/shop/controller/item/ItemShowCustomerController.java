@@ -69,9 +69,10 @@ public class ItemShowCustomerController {
 		Integer id;
 		Integer CId;
 		List<Integer> itemId = orderItemRepository.findIdWithQuery();
+		List<Integer> CategoryId ;
 		for (Integer i = 0; i<itemId.size();i++) {
 			id = itemId.get(i);
-			List<Integer> CategoryId = itemRepository.findCategoryIdById(id);
+			CategoryId.add(itemRepository.findCategoryIdById(id));
 			
 		}
 		
