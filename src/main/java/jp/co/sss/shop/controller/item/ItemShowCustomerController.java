@@ -58,6 +58,7 @@ public class ItemShowCustomerController {
 			}
 		}
 		model.addAttribute("items", item);
+		List<Item>  categoryId = itemRepository.findCategoryIdById(1);
 		return "index";
 	}
 	
