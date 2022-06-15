@@ -66,8 +66,8 @@ public class ItemShowCustomerController {
 	@RequestMapping(path = "/item/list/{sortType}")
 	public String showItemList(@PathVariable int sortType, Model model, HttpSession session) {
 		if(session.getAttribute("user") != null) {
-			UserBean userBean = (UserBean) session.getAttribute("user");
-			List<Favorite> favorites = favoriteRepository.findByUserIdOrderByItemId(userBean.getId());
+			Integer userId = ((UserBean) session.getAttribute("user")).getId();
+			List<Favorite> favorites = favoriteRepository.findByUserIdOrderByItemId(userId);
 			model.addAttribute("favorites", favorites);	
 		}
 		if (sortType == 1) {
@@ -92,8 +92,13 @@ public class ItemShowCustomerController {
 	}
 	
 	@RequestMapping(path = "/item/detail/{id}")
-	public String showItem(@PathVariable int id, Model model) {
+	public String showItem(@PathVariable int id, Model model, HttpSession session) {
 		model.addAttribute("item", itemRepository.getById(id));
+		if(session.getAttribute("user") != null) {
+			Integer userId = ((UserBean) session.getAttribute("user")).getId();
+			Favorite favorite = favoriteRepository.findByUserIdAndItemId(userId, id);
+			model.addAttribute("favorite", favorite);	
+		}
 		
 		return "item/detail/item_detail";
 	}

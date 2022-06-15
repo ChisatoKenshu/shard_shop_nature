@@ -12,14 +12,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import jp.co.sss.shop.bean.BasketBean;
+import jp.co.sss.shop.bean.UserBean;
+import jp.co.sss.shop.entity.Favorite;
 import jp.co.sss.shop.entity.Item;
 import jp.co.sss.shop.form.BasketForm;
+import jp.co.sss.shop.repository.FavoriteRepository;
 import jp.co.sss.shop.repository.ItemRepository;
 
 @Controller
 public class BasketCustomerController {
 	@Autowired
 	ItemRepository itemRepository;
+	@Autowired
+	FavoriteRepository favoriteRepository;
 	
 	@RequestMapping(path="/basket/list", method=RequestMethod.GET)
 	public String basketListGet(HttpSession session, Model model) {
@@ -51,20 +56,20 @@ public class BasketCustomerController {
 		//初期値設定
 		int id =  basketForm.getId();
 		Item item = itemRepository.getById(id);
-		List<BasketBean> nowBasketBeanList = (List<BasketBean>) session.getAttribute("basketBeanList");
+		List<BasketBean> sessionBasketBeanList = (List<BasketBean>) session.getAttribute("basketBeanList");
 		List<BasketBean> basketBeanList = new ArrayList<BasketBean>();
 		BasketBean basketBean = new BasketBean(id, item.getName(), item.getStock());
 		boolean isBasketListExistId = false;
 		boolean isStockGreaterThanOrderNum = true;
 		
 		//sessionの買い物かごリストがnull or 空かどうか判定
-		if(nowBasketBeanList == null || nowBasketBeanList.isEmpty()) {
+		if(sessionBasketBeanList == null || sessionBasketBeanList.isEmpty()) {
 			session.setAttribute("basketBeanList", basketBeanList);
 			basketBeanList.add(basketBean);
 			model.addAttribute("basket", basketBean);
 		}else {
 			//nullじゃないとき
-			basketBeanList = nowBasketBeanList;
+			basketBeanList = sessionBasketBeanList;
 			int cnt = 0;
 			for(BasketBean basketBeanCol : basketBeanList) {
 				if(basketBeanCol.getId() == basketBean.getId()) {
@@ -123,6 +128,60 @@ public class BasketCustomerController {
 		List<BasketBean> basketBeanList = (List<BasketBean>) session.getAttribute("basketBeanList");
 		basketBeanList.clear();
 		model.addAttribute("isStockGreaterThanOrderNum", true);
+		session.setAttribute("basketBeanList", basketBeanList);
+		return "redirect:/basket/list";
+	}
+	
+	@RequestMapping("/basket/favorite/add")
+	public String addFavoriteItem(Model model, HttpSession session, BasketForm basketForm) {
+		//初期値設定
+		int id =  basketForm.getId();
+		Item item = itemRepository.getById(id);
+		List<BasketBean> sessionBasketBeanList = (List<BasketBean>) session.getAttribute("basketBeanList");
+		List<BasketBean> basketBeanList = new ArrayList<BasketBean>();
+		BasketBean basketBean = new BasketBean(id, item.getName(), item.getStock());
+		boolean isBasketListExistId = false;
+		boolean isStockGreaterThanOrderNum = true;
+		
+		//sessionの買い物かごリストがnull or 空かどうか判定
+		if(sessionBasketBeanList == null || sessionBasketBeanList.isEmpty()) {
+			session.setAttribute("basketBeanList", basketBeanList);
+			basketBeanList.add(basketBean);
+			model.addAttribute("basket", basketBean);
+		}else {
+			//nullじゃないとき
+			basketBeanList = sessionBasketBeanList;
+			int cnt = 0;
+			for(BasketBean basketBeanCol : basketBeanList) {
+				if(basketBeanCol.getId() == basketBean.getId()) {
+					
+					if(basketBeanCol.getStock() > basketBeanCol.getOrderNum()) {
+						int getOrderNum  = basketBeanCol.getOrderNum() + 1;
+						basketBeanList.get(cnt).setOrderNum(getOrderNum);
+					}else {
+						isStockGreaterThanOrderNum = false;
+					}
+					model.addAttribute("basket", basketBeanCol);
+					isBasketListExistId = false;
+					break;
+				}else {
+					isBasketListExistId = true;
+				}
+				cnt++;
+			}
+		}
+		if(isBasketListExistId == true) {
+			basketBeanList.add(basketBean);
+			model.addAttribute("basket", basketBean);
+		}
+		
+		//お気に入り情報を論理削除する
+		Integer userId = ((UserBean) session.getAttribute("user")).getId();
+		Favorite favorite = favoriteRepository.findByUserIdAndItemId(userId, id);
+		favorite.setIsFav(0);
+		favoriteRepository.save(favorite);
+		
+		model.addAttribute("isStockGreaterThanOrderNum", isStockGreaterThanOrderNum);
 		session.setAttribute("basketBeanList", basketBeanList);
 		return "redirect:/basket/list";
 	}

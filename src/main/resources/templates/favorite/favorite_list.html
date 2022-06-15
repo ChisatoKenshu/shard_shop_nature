@@ -8,59 +8,50 @@
 <body class="user item_list">
 
 		<h2 class="title">お気に入り一覧</h2>
-		
-		<div class="sorted_by" th:if="!${sortType == '2'}" th:unless="${#lists.isEmpty(items)}">
-			<span>
-				新着順
-			</span>
-			<span><a href="/shared_shop/item/list/2">
-				売れ筋順
-			</a></span>
-		</div>
-		<div class="sorted_by" th:if="!${sortType != '2'}" th:unless="${#lists.isEmpty(items)}">
-			<span><a href="/shared_shop/item/list/1">
-				新着順
-			</a></span>
-			<span>
-				売れ筋順
-			</span>
-		</div>
 
-		<div th:if="${#lists.isEmpty(items)}">
-			<p th:text="#{itemList.none}"></p>
+		<div th:unless="${#strings.isEmpty(itemName)}">
+			<p th:text="${itemName} + #{favorite.delete}" style="color: red"></p>
 		</div>
-		<table class="list_table item_detail" th:if="!${#lists.isEmpty(items)}">
+		
+		<div th:if="${#lists.isEmpty(favorites)}">
+			<p th:text="#{favorite.none}"></p>
+		</div>
+		
+		<table class="list_table item_detail" th:unless="${#lists.isEmpty(favorites)}">
 			<tr>
 				<th>商品画像</th>
 				<th>商品名</th>
 				<th>価格</th>
-				<th>カテゴリ</th>
 			</tr>
 			<!--/* お気に入り情報 */-->
-			<tr th:each="item, st: ${items}">
+			<tr th:each="favorite: ${favorites}">
 				<td class="image">
-					<span th:if="${item.image != null}">
-						<img th:src="@{/img/{image}(image=${item.image})}"></img>
+					<span th:if="${items.get(favorite.itemId - 1).image != null}">
+						<img th:src="@{/img/{image}(image=${items.get(favorite.itemId - 1).image})}"></img>
 					</span>
-					<span th:if="${item.image == null}">
+					<span th:if="${items.get(favorite.itemId - 1).image == null}">
 						<img th:src="@{/img/common/no_image.jpg}"></img>
 					</span>
 				</td>
-				<td><a th:href="@{/item/detail/{id}(id=${item.id})}"
-					th:text="${item.name}"></a></td>
-				<td th:text="${item.price}"></td>
-				<td th:text="${item.category.name}"></td>
+				<td><a th:href="@{/item/detail/{id}(id=${items.get(favorite.itemId - 1).id})}"
+					th:text="${items.get(favorite.itemId - 1).name}"></a></td>
+				<td th:text="${items.get(favorite.itemId - 1).price}"></td>
 				<td>
-					<th:block th:if="${session.user != null}">
-						<form th:action="@{/item/favorite}" method="post" class="fav_form">
-							<button type="submit" th:id="${item.id}" th:value="${favorites.get(item.id - 1).isFav}">☆</button>
+					<th:block th:if="${items.get(favorite.itemId - 1).stock != 0}">
+						<form th:action="@{/basket/favorite/add}" method="post">
+							<input type="hidden" th:value="${items.get(favorite.itemId - 1).id}" name="id">
+							<input type="submit" value="買い物かごに入れる" class="basket_button">
 						</form>
 					</th:block>
-					<th:block th:if="${session.user == null}">
-						<form th:action="@{/login}">
-							<input type="submit" value="☆">
-						</form>
+					<th:block th:unless="${items.get(favorite.itemId - 1).stock != 0}">
+						<div>在庫がありません</div>
 					</th:block>
+				</td>
+				<td>
+					<form th:action="@{/favorite/delete}" method="post">
+						<input type="hidden" th:value="${items.get(favorite.itemId - 1).id}" name="itemId">
+						<input type="submit" value="削除">
+					</form>
 				</td>
 			</tr>
 		</table>

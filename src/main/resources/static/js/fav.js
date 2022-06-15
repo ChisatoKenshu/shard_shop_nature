@@ -10,7 +10,7 @@ $(function() {
 	favForm.on("submit", {passive: false}, function(e) {
 	    e.preventDefault();  // デフォルトのイベント(ページの遷移やデータ送信など)を無効にする
 		
-		var btnId = $('#' + $(this).children('button').attr('id'));
+		let btnId = $('#' + $(this).children('button').attr('id'));
 		
 		
 		/* inputのvalueが0の時valueを1にしてボタンのカラー変更 */

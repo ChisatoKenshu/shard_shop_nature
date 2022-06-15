@@ -66,4 +66,17 @@ public class FavoriteCustomerController {
 		model.addAttribute("items", itemList);
 		return "favorite/favorite_list";
 	}
+	
+	@RequestMapping("/favorite/delete")
+	public String favoriteDel(Model model, HttpSession session, Integer itemId) {
+		Integer userId = ((UserBean) session.getAttribute("user")).getId();
+		Favorite favorite = favoriteRepository.findByUserIdAndItemId(userId, itemId);
+		favorite.setIsFav(0);
+		
+		String itemName = itemRepository.getById(itemId).getName();
+		
+		favoriteRepository.save(favorite);
+		model.addAttribute("itemName", itemName);
+		return "forward:/favorite/list";
+	}
 }

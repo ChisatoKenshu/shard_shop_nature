@@ -11,4 +11,6 @@ public interface FavoriteRepository extends JpaRepository<Favorite, FavoriteKey>
 	List<Favorite> findByUserIdOrderByItemId(Integer userId);
 	
 	List<Favorite> findByUserIdAndIsFav(Integer userId, Integer idFav);
+	
+	Favorite findByUserIdAndItemId(Integer userId, Integer itemId);
 }
