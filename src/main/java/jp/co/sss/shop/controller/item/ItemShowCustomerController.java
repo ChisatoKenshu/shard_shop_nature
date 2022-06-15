@@ -65,7 +65,16 @@ public class ItemShowCustomerController {
 		}
 		//モデルにItemリストを渡す
 		model.addAttribute("items", item);
-		List<Item>  categoryId = itemRepository.findCategoryIdById(1);
+		
+		Integer id;
+		Integer CId;
+		List<Integer> itemId = orderItemRepository.findIdWithQuery();
+		for (Integer i = 0; i<itemId.size();i++) {
+			id = itemId.get(i);
+			List<Integer> CategoryId = itemRepository.findCategoryIdById(id);
+			
+		}
+		
 		return "index";
 	}
 	
