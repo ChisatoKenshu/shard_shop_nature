@@ -3,13 +3,18 @@ package jp.co.sss.shop.controller.item;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import jp.co.sss.shop.bean.UserBean;
+import jp.co.sss.shop.entity.Favorite;
 import jp.co.sss.shop.entity.Item;
+import jp.co.sss.shop.repository.FavoriteRepository;
 import jp.co.sss.shop.repository.ItemRepository;
 import jp.co.sss.shop.repository.OrderItemRepository;
 
@@ -32,6 +37,8 @@ public class ItemShowCustomerController {
 	@Autowired
 	OrderItemRepository orderItemRepository;
 
+	@Autowired
+	FavoriteRepository favoriteRepository;
 	
 	/**
 	 * トップ画面 表示処理
@@ -42,12 +49,12 @@ public class ItemShowCustomerController {
 	@RequestMapping(path = "/")
 	public String index(Model model) {
 		List<Integer> itemIdSort = orderItemRepository.findIdSUMDescWithQuery();
-		List<Integer> itemIdStock = itemRepository.findIdWithQuery();
+		List<Integer> itemIdDelete = itemRepository.findIdWithQuery();
 		List<Item> item = new ArrayList<>();
 		int cnt = 0;
 		for (Integer idSort : itemIdSort) {
-			for (Integer idStock : itemIdStock) {
-				if (idSort == idStock) {
+			for (Integer idDelete : itemIdDelete) {
+				if (idSort == idDelete) {
 					item.add(itemRepository.getById(idSort));
 					cnt ++;
 					break;
@@ -62,16 +69,21 @@ public class ItemShowCustomerController {
 	}
 	
 	@RequestMapping(path = "/item/list/{sortType}")
-	public String showItemList(@PathVariable int sortType, Model model) {
+	public String showItemList(@PathVariable int sortType, Model model, HttpSession session) {
+		if(session.getAttribute("user") != null) {
+			Integer userId = ((UserBean) session.getAttribute("user")).getId();
+			List<Favorite> favorites = favoriteRepository.findByUserIdOrderByItemId(userId);
+			model.addAttribute("favorites", favorites);	
+		}
 		if (sortType == 1) {
 			model.addAttribute("items", itemRepository.findByDeleteFlagOrderByInsertDateDescIdAsc(0));
 		} else {
 			List<Integer> itemIdSort = orderItemRepository.findIdSUMDescWithQuery();
-			List<Integer> itemIdStock = itemRepository.findIdWithQuery();
+			List<Integer> itemIdDelete = itemRepository.findIdWithQuery();
 			List<Item> item = new ArrayList<>();
 			for (Integer idSort : itemIdSort) {
-				for (Integer idStock : itemIdStock) {
-					if (idSort == idStock) {
+				for (Integer idDelete : itemIdDelete) {
+					if (idSort == idDelete) {
 						item.add(itemRepository.getById(idSort));
 						break;
 					}
@@ -80,19 +92,29 @@ public class ItemShowCustomerController {
 			model.addAttribute("items", item);
 			model.addAttribute("sortType", "2");
 		}
-		
+
 		return "item/list/item_list";
 	}
 	
 	@RequestMapping(path = "/item/detail/{id}")
-	public String showItem(@PathVariable int id, Model model) {
+	public String showItem(@PathVariable int id, Model model, HttpSession session) {
 		model.addAttribute("item", itemRepository.getById(id));
+		if(session.getAttribute("user") != null) {
+			Integer userId = ((UserBean) session.getAttribute("user")).getId();
+			Favorite favorite = favoriteRepository.findByUserIdAndItemId(userId, id);
+			model.addAttribute("favorite", favorite);	
+		}
 		
 		return "item/detail/item_detail";
 	}
 
 	@RequestMapping(path = "/item/list/category/{sortType}")
-	public String showItemListCategory(@PathVariable int sortType, Integer categoryId, Model model) {
+	public String showItemListCategory(@PathVariable int sortType, Integer categoryId, Model model, HttpSession session) {
+		if(session.getAttribute("user") != null) {
+			UserBean userBean = (UserBean) session.getAttribute("user");
+			List<Favorite> favorites = favoriteRepository.findByUserIdOrderByItemId(userBean.getId());
+			model.addAttribute("favorites", favorites);	
+		}
 		List<Integer> itemIdSort = new ArrayList<>();
 		if (sortType == 1) {
 			itemIdSort = itemRepository.findIdOrderByInsertDateDescWithQuery();
