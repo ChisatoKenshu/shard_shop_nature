@@ -68,8 +68,10 @@ public class ItemShowCustomerController {
 		
 		Integer id;
 		Integer CId;
+		//購入された商品のカテゴリーIdを検索
 		List<Integer> itemId = orderItemRepository.findIdWithQuery();
-		List<Integer> CategoryId ;
+		//カテゴリーIdを格納するリストを作成
+		List<Integer> CategoryId = new ArrayList<>();
 		for (Integer i = 0; i<itemId.size();i++) {
 			id = itemId.get(i);
 			CategoryId.add(itemRepository.findCategoryIdById(id));
