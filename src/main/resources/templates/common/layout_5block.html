@@ -23,7 +23,7 @@
 			<li th:if="${session.user != null and session.user.authority == 2}">
 				<a href="/shared_shop/order/list"> 注文一覧 </a>
 			</li>
-			<li><a href="/shard_shop/favorite">お気に入り</a></li>
+			<li><a th:href="@{/favorite/list}">お気に入り</a></li>
 		</ul>
 	</nav>
 	<div class="container">

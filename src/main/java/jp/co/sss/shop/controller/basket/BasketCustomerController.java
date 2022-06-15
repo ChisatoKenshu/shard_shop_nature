@@ -90,7 +90,7 @@ public class BasketCustomerController {
 		}
 		model.addAttribute("isStockGreaterThanOrderNum", isStockGreaterThanOrderNum);
 		session.setAttribute("basketBeanList", basketBeanList);
-		return "forward:/basket/list";
+		return "redirect:/basket/list";
 	}
 	
 	@RequestMapping(path="/basket/delete", method=RequestMethod.POST)
@@ -115,7 +115,7 @@ public class BasketCustomerController {
 		}
 		model.addAttribute("isStockGreaterThanOrderNum", true);
 		session.setAttribute("basketBeanList", basketBeanList);
-		return "forward:/basket/list";
+		return "redirect:/basket/list";
 	}
 	
 	@RequestMapping(path="/basket/allDelete", method=RequestMethod.POST)
@@ -124,6 +124,6 @@ public class BasketCustomerController {
 		basketBeanList.clear();
 		model.addAttribute("isStockGreaterThanOrderNum", true);
 		session.setAttribute("basketBeanList", basketBeanList);
-		return "forward:/basket/list";
+		return "redirect:/basket/list";
 	}
 }

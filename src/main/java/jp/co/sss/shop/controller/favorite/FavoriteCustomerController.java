@@ -1,5 +1,7 @@
 package jp.co.sss.shop.controller.favorite;
 
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +19,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jp.co.sss.shop.bean.FavBean;
 import jp.co.sss.shop.bean.UserBean;
 import jp.co.sss.shop.entity.Favorite;
+import jp.co.sss.shop.entity.Item;
 import jp.co.sss.shop.repository.FavoriteRepository;
+import jp.co.sss.shop.repository.ItemRepository;
 
 @Controller
 public class FavoriteCustomerController {
 	@Autowired
 	private FavoriteRepository favoriteRepository;
+	@Autowired
+	private ItemRepository itemRepository;
 	
 	@RequestMapping(path="/item/favorite", method=RequestMethod.POST)
 	@ResponseBody
@@ -40,9 +46,6 @@ public class FavoriteCustomerController {
 			favorite.setIsFav(Integer.parseInt(favBean.getIsFav()));
 			
 			favoriteRepository.save(favorite);
-			System.out.println("\n\n\n\n\n\n\n\nfav ItemId:" + favorite.getItemId());
-			System.out.println("Userid:" + favorite.getUserId());
-			System.out.println("fav:" + favorite.getIsFav());
 		} catch (JsonMappingException e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
@@ -51,5 +54,16 @@ public class FavoriteCustomerController {
 			e.printStackTrace();
 		}
 		return json;
+	}
+	
+	@RequestMapping("/favorite/list")
+	public String favoriteList(Model model, HttpSession session) {
+		Integer userId = ((UserBean) session.getAttribute("user")).getId();
+		List<Favorite> favoriteList = favoriteRepository.findByUserIdAndIsFav(userId, 1);
+		List<Item> itemList = itemRepository.findAll();
+		
+		model.addAttribute("favorites", favoriteList);
+		model.addAttribute("items", itemList);
+		return "favorite/favorite_list";
 	}
 }

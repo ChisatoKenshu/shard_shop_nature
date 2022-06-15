@@ -2,12 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org"
         th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
 <head>
-<title>商品一覧 | シェアードショップ</title>
+<title>お気に入り一覧 | シェアードショップ</title>
 <meta charset="UTF-8" />
 </head>
 <body class="user item_list">
 
-		<h2 class="title">商品一覧</h2>
+		<h2 class="title">お気に入り一覧</h2>
 		
 		<div class="sorted_by" th:if="!${sortType == '2'}" th:unless="${#lists.isEmpty(items)}">
 			<span>
@@ -36,7 +36,7 @@
 				<th>価格</th>
 				<th>カテゴリ</th>
 			</tr>
-			<!--/* 商品情報 */-->
+			<!--/* お気に入り情報 */-->
 			<tr th:each="item, st: ${items}">
 				<td class="image">
 					<span th:if="${item.image != null}">
