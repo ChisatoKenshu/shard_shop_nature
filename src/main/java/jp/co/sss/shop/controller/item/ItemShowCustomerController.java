@@ -41,10 +41,15 @@ public class ItemShowCustomerController {
 	 */
 	@RequestMapping(path = "/")
 	public String index(Model model) {
+		//売れ筋ソートで商品ID検索
 		List<Integer> itemIdSort = orderItemRepository.findIdSUMDescWithQuery();
+		//削除フラグで商品ID検索
 		List<Integer> itemIdStock = itemRepository.findIdWithQuery();
+		//商品情報を格納するリストを宣言
 		List<Item> item = new ArrayList<>();
+		//商品情報が入った回数をカウントする変数
 		int cnt = 0;
+		//売れ筋ソートしたID順に削除フラグが立っていない商品をItemリストに格納
 		for (Integer idSort : itemIdSort) {
 			for (Integer idStock : itemIdStock) {
 				if (idSort == idStock) {
@@ -53,10 +58,12 @@ public class ItemShowCustomerController {
 					break;
 				}
 			}
+			//4件商品がリストに格納されたら終了
 			if (cnt == 4) {
 				break;
 			}
 		}
+		//モデルにItemリストを渡す
 		model.addAttribute("items", item);
 		List<Item>  categoryId = itemRepository.findCategoryIdById(1);
 		return "index";
@@ -64,9 +71,12 @@ public class ItemShowCustomerController {
 	
 	@RequestMapping(path = "/item/list/{sortType}")
 	public String showItemList(@PathVariable int sortType, Model model) {
+		//ソートタイプが1なら新着順でモデルに渡す
 		if (sortType == 1) {
 			model.addAttribute("items", itemRepository.findByDeleteFlagOrderByInsertDateDescIdAsc(0));
-		} else {
+		}
+		//ソートタイプが2なら売れ筋順でモデルに渡す
+		else {
 			List<Integer> itemIdSort = orderItemRepository.findIdSUMDescWithQuery();
 			List<Integer> itemIdStock = itemRepository.findIdWithQuery();
 			List<Item> item = new ArrayList<>();
@@ -94,15 +104,22 @@ public class ItemShowCustomerController {
 
 	@RequestMapping(path = "/item/list/category/{sortType}")
 	public String showItemListCategory(@PathVariable int sortType, Integer categoryId, Model model) {
+		//ソートした商品IDを格納するリストを宣言
 		List<Integer> itemIdSort = new ArrayList<>();
+		//ソートタイプが1なら新着順で商品IDを格納
 		if (sortType == 1) {
 			itemIdSort = itemRepository.findIdOrderByInsertDateDescWithQuery();
-		} else {
+		}
+		//ソートタイプが2なら売れ筋順で商品IDを格納
+		else {
 			itemIdSort = orderItemRepository.findIdSUMDescWithQuery();
 			model.addAttribute("sortType", "2");
 		}
+		//カテゴリと削除フラグで商品IDを検索しリストに格納
 		List<Integer> itemIdCategory = itemRepository.findIdByCategoryWithQuery(categoryId);
+		//商品情報を格納するリストを宣言
 		List<Item> item = new ArrayList<>();
+		//ソートしたID順に指定カテゴリかつ削除フラグが立っていない商品をItemリストに格納
 		for (Integer idSort : itemIdSort) {
 			for (Integer idCategory : itemIdCategory) {
 				if (idSort == idCategory) {

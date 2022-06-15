@@ -14,6 +14,7 @@ import jp.co.sss.shop.entity.OrderItem;
  */
 public interface OrderItemRepository extends JpaRepository<OrderItem, Integer> {
 	
+	/** OrderItemテーブルから商品IDを売れた個数の降順で取り出す*/
 	@Query("SELECT oi.item.id FROM OrderItem oi GROUP BY oi.item.id ORDER BY SUM(oi.quantity) DESC, oi.item.id ASC")
 	public List<Integer> findIdSUMDescWithQuery();
 	
