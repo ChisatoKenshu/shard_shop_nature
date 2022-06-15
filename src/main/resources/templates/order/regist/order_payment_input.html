@@ -15,6 +15,7 @@
 				<li th:each="err : ${#fields.errors('*')}" th:text="${err}"
 					th:class="error_list"></li>
 			</ul>
+			
 
 			<div th:each="payment : ${payments}">
 				<span class="input_title"></span>
@@ -22,7 +23,7 @@
 						name="payMethod"
 						th:value="${payment.key}"
 						th:text="${payment.value}"
-						th:checked="${payment.key == 1}" />
+						th:checked="${payment.key == order.payMethod}" />
 				<span class="error_message"></span>
 			</div>
 			<input type="hidden" name="postalCode" th:value="${order.postalCode}" />
@@ -31,7 +32,12 @@
 			<input type="hidden" name="phoneNumber" th:value="${order.phoneNumber}" />
 			<input type="submit" value="次へ" class="send_button" />
 		</form>
-		<form th:action="@{/adress/input}" method="get">
+		<form th:action="@{/address/input}" method="post">
+			<input type="hidden" name="backFlg" value="true" />
+			<input type="hidden" name="postalCode" th:value="${order.postalCode}" />
+			<input type="hidden" name="address" th:value="${order.address}" />
+			<input type="hidden" name="name" th:value="${order.name}" />
+			<input type="hidden" name="phoneNumber" th:value="${order.phoneNumber}" />
 			<input type="submit" value="戻る" class="back_button" />
 		</form>
 	</div>
