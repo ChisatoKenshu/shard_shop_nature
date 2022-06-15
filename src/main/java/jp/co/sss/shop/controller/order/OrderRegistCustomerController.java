@@ -80,6 +80,9 @@ public class OrderRegistCustomerController {
 	@RequestMapping(path = "/address/input", method = RequestMethod.POST)
 	public String updateInput(boolean backFlg, Model model, @ModelAttribute OrderForm form, HttpSession session) {
 
+		// 届け先情報の生成
+		OrderBean orderBean = new OrderBean();
+
 		// 戻るボタンで遷移してきたか判定
 		if (!backFlg) {
 
@@ -87,22 +90,18 @@ public class OrderRegistCustomerController {
 			Integer userId = ((UserBean) session.getAttribute("user")).getId();
 			User user = userRepository.getById(userId);
 
-			// 届け先情報を生成し、name,postalCode,address,phoneNumberをコピー
-			OrderBean orderBean = new OrderBean();
+			// name,postalCode,address,phoneNumberをコピー
 			BeanUtils.copyProperties(user, orderBean);
-
-			// 届け先情報をViewに渡す
-			model.addAttribute("order", orderBean);
 
 		} else {
 
-			// 届け先情報の生成
-			OrderBean orderBean = new OrderBean();
+			// 入力値を保持するためにFormからコピー
 			BeanUtils.copyProperties(form, orderBean);
-
-			// 届け先情報をViewに渡す
-			model.addAttribute("order", orderBean);
 		}
+
+		// 届け先情報をViewに渡す
+		model.addAttribute("order", orderBean);
+
 		return "order/regist/order_address_input";
 	}
 
@@ -113,21 +112,30 @@ public class OrderRegistCustomerController {
 	 * @return "order/regist/order_check" 注文内容確認画面へ
 	 */
 	@RequestMapping(path = "/payment/input", method = RequestMethod.POST)
-	public String inputPayment(Model model, @Valid @ModelAttribute OrderForm form, BindingResult result,
-			HttpSession session) {
-
-		// 入力値を注文情報にコピー
-		OrderBean orderBean = new OrderBean();
-		BeanUtils.copyProperties(form, orderBean);
-
-		// 注文情報をViewに渡す
-		model.addAttribute("order", orderBean);
+	public String inputPayment(boolean backFlg, Model model, @Valid @ModelAttribute OrderForm form,
+			BindingResult result, HttpSession session) {
 
 		// 入力値にエラーがあった場合、届け先入力画面に戻る
 		if (result.hasErrors()) {
 
 			return "order/regist/order_address_input";
 		}
+
+		// 届け先情報の生成
+		OrderBean orderBean = new OrderBean();
+
+		// 入力値を注文情報にコピー
+		BeanUtils.copyProperties(form, orderBean);
+
+		// 戻るボタンで遷移してきたか判定
+		if (!backFlg) {
+
+			// 支払情報の初期値を設定
+			orderBean.setPayMethod(1);
+		}
+
+		// 注文情報をViewに渡す
+		model.addAttribute("order", orderBean);
 
 		// ラジオボタンのMapを作成しModelでViewに渡す
 		Map<Integer, String> radioPayment = new LinkedHashMap<>();
@@ -136,8 +144,6 @@ public class OrderRegistCustomerController {
 		radioPayment.put(3, "着払い");
 		radioPayment.put(4, "電子マネー");
 		radioPayment.put(5, "コンビニ決済");
-		// ラジオボタンの初期値を設定
-		form.setPayMethod(1);
 		model.addAttribute("payments", radioPayment);
 
 		return "order/regist/order_payment_input";
@@ -167,10 +173,10 @@ public class OrderRegistCustomerController {
 
 		// OrderItemBean型の空のリストを作成
 		List<OrderItemBean> orderItemBeans = new ArrayList<OrderItemBean>();
-		
+
 		// 金額合計表示用変数
 		Integer total = 0;
-		
+
 		// 在庫確認用Map
 		Map<String, Integer> stockMap = new LinkedHashMap<>();
 
@@ -187,7 +193,7 @@ public class OrderRegistCustomerController {
 
 			// id, name, price, imageをコピー
 			BeanUtils.copyProperties(item, orderItem);
-			
+
 			// orderNumを設定
 			orderItem.setOrderNum(bean.getOrderNum());
 
@@ -195,12 +201,12 @@ public class OrderRegistCustomerController {
 			Integer subtotal = orderItem.getPrice() * orderItem.getOrderNum();
 			orderItem.setSubtotal(subtotal);
 			total += subtotal;
-			
+
 			// 在庫の確認
 			Integer stock = item.getStock() - orderItem.getOrderNum();
 			if (item.getStock() == 0) {
 				stockMap.put(item.getName(), 0);
-			}else if (stock < 0) {
+			} else if (stock < 0) {
 				stockMap.put(item.getName(), 1);
 			}
 
@@ -212,7 +218,6 @@ public class OrderRegistCustomerController {
 		model.addAttribute("orderItemBeans", orderItemBeans);
 		model.addAttribute("total", total);
 		model.addAttribute("stocks", stockMap);
-		
 
 		session.setAttribute("orderItemBeans", orderItemBeans);
 
@@ -220,7 +225,7 @@ public class OrderRegistCustomerController {
 	}
 
 	/**
-	 * 商品情報登録完了画面
+	 * 注文登録完了処理
 	 *
 	 * @return "order/regist/order_complete" 注文完了画面へ
 	 */
@@ -263,7 +268,7 @@ public class OrderRegistCustomerController {
 			orderItem.setOrder(order);
 			orderItem.setItem(item);
 			orderItem.setPrice(item.getPrice());
-			
+
 			// 商品の在庫を変更
 			item.setStock(item.getStock() - orderItem.getQuantity());
 			itemRepository.save(item);
@@ -277,11 +282,22 @@ public class OrderRegistCustomerController {
 		// 注文商品情報を上書きして保存
 		order.setOrderItemsList(orderItems);
 		orderRepository.save(order);
-		
+
 		List<BasketBean> basketBeanList = (List<BasketBean>) session.getAttribute("basketBeanList");
 		basketBeanList.clear();
 		session.setAttribute("basketBeanList", basketBeanList);
 
+		return "redirect:/order/complete";
+	}
+	
+	/**
+	 * 注文情報登録完了画面
+	 *
+	 * @return "item/regist/item_regist_complete" 注文登録完了画面へ
+	 */
+	@RequestMapping(path = "/order/complete", method = RequestMethod.GET)
+	public String orderCompleteRedirect() {
+		
 		return "order/regist/order_complete";
 	}
 
