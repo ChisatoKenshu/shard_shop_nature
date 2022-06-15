@@ -32,4 +32,9 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
 	@Query("SELECT i.id FROM Item i WHERE i.deleteFlag = 0 AND i.category.id = :id")
 	public List<Integer> findIdByCategoryWithQuery(Integer id);
 
+	//購入された商品のカテゴリーIdを検索
+	@Query("select i.category.id from Item i")
+	public List<Item> findCategoryIdById(Integer id);
+
+
 }
