@@ -115,12 +115,6 @@ public class OrderRegistCustomerController {
 	public String inputPayment(boolean backFlg, Model model, @Valid @ModelAttribute OrderForm form,
 			BindingResult result, HttpSession session) {
 
-		// 入力値にエラーがあった場合、届け先入力画面に戻る
-		if (result.hasErrors()) {
-
-			return "order/regist/order_address_input";
-		}
-
 		// 届け先情報の生成
 		OrderBean orderBean = new OrderBean();
 
@@ -136,6 +130,12 @@ public class OrderRegistCustomerController {
 
 		// 注文情報をViewに渡す
 		model.addAttribute("order", orderBean);
+
+		// 入力値にエラーがあった場合、届け先入力画面に戻る
+		if (result.hasErrors()) {
+
+			return "order/regist/order_address_input";
+		}
 
 		// ラジオボタンのMapを作成しModelでViewに渡す
 		Map<Integer, String> radioPayment = new LinkedHashMap<>();
@@ -289,7 +289,7 @@ public class OrderRegistCustomerController {
 
 		return "redirect:/order/complete";
 	}
-	
+
 	/**
 	 * 注文情報登録完了画面
 	 *
@@ -297,7 +297,7 @@ public class OrderRegistCustomerController {
 	 */
 	@RequestMapping(path = "/order/complete", method = RequestMethod.GET)
 	public String orderCompleteRedirect() {
-		
+
 		return "order/regist/order_complete";
 	}
 
