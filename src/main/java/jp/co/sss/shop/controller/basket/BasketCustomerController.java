@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jp.co.sss.shop.bean.BasketBean;
 import jp.co.sss.shop.bean.UserBean;
@@ -32,7 +33,8 @@ public class BasketCustomerController {
 		if(session.getAttribute("user") == null) {
 			return "redirect:/login";
 		}
-		model.addAttribute("isStockGreaterThanOrderNum", true);
+		String basketName = (String) model.getAttribute("basketName");
+		model.addAttribute("basketName", basketName);
 		return "basket/shopping_basket";
 	}
 	
@@ -47,7 +49,7 @@ public class BasketCustomerController {
 	}
 	
 	@RequestMapping(path="/basket/add", method=RequestMethod.POST)
-	public String addItem(Model model, HttpSession session, BasketForm basketForm) {
+	public String addItem(Model model, HttpSession session, BasketForm basketForm, RedirectAttributes redirectAttributes) {
 		//ログインしていなかったらログイン画面に遷移する
 		if(session.getAttribute("user") == null) {
 			return "redirect:/login";
@@ -60,27 +62,26 @@ public class BasketCustomerController {
 		List<BasketBean> basketBeanList = new ArrayList<BasketBean>();
 		BasketBean basketBean = new BasketBean(id, item.getName(), item.getStock());
 		boolean isBasketListExistId = false;
-		boolean isStockGreaterThanOrderNum = true;
 		
 		//sessionの買い物かごリストがnull or 空かどうか判定
 		if(sessionBasketBeanList == null || sessionBasketBeanList.isEmpty()) {
 			session.setAttribute("basketBeanList", basketBeanList);
 			basketBeanList.add(basketBean);
-			model.addAttribute("basket", basketBean);
 		}else {
 			//nullじゃないとき
 			basketBeanList = sessionBasketBeanList;
 			int cnt = 0;
 			for(BasketBean basketBeanCol : basketBeanList) {
 				if(basketBeanCol.getId() == basketBean.getId()) {
-					
+					//在庫よりもorder数が少ない時
 					if(basketBeanCol.getStock() > basketBeanCol.getOrderNum()) {
 						int getOrderNum  = basketBeanCol.getOrderNum() + 1;
 						basketBeanList.get(cnt).setOrderNum(getOrderNum);
 					}else {
-						isStockGreaterThanOrderNum = false;
+						//在庫よりもorder数が多くなる時
+						String basketName = basketBeanCol.getName();
+						redirectAttributes.addFlashAttribute("basketName", basketName);
 					}
-					model.addAttribute("basket", basketBeanCol);
 					isBasketListExistId = false;
 					break;
 				}else {
@@ -91,9 +92,7 @@ public class BasketCustomerController {
 		}
 		if(isBasketListExistId == true) {
 			basketBeanList.add(basketBean);
-			model.addAttribute("basket", basketBean);
 		}
-		model.addAttribute("isStockGreaterThanOrderNum", isStockGreaterThanOrderNum);
 		session.setAttribute("basketBeanList", basketBeanList);
 		return "redirect:/basket/list";
 	}
