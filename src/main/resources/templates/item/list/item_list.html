@@ -52,6 +52,7 @@
 				<td th:text="${item.category.name}"></td>
 				<td>
 					<th:block th:if="${session.user != null}">
+						<div th:text="${favorites.get(st.index).itemId}"></div>
 						<th:block th:if="${favorites.get(st.index).itemId == item.id}">
 							<form th:action="@{/item/favorite}" method="post" class="fav_form">
 								<button type="submit" th:id="${item.id}" th:value="${favorites.get(st.index).isFav}">☆</button>

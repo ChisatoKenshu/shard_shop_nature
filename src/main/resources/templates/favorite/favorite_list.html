@@ -24,7 +24,7 @@
 				<th>価格</th>
 			</tr>
 			<!--/* お気に入り情報 */-->
-			<tr th:each="favorite: ${favorites}">
+			<tr th:each="favorite, st: ${favorites}">
 				<td class="image">
 					<span th:if="${items.get(favorite.itemId - 1).image != null}">
 						<img th:src="@{/img/{image}(image=${items.get(favorite.itemId - 1).image})}"></img>
