@@ -31,6 +31,8 @@
 				</dl>
 			</div>
 			
+			<div><a th:href="@{/review/list/admin/{id}(id=${item.id})}" th:text="レビュー一覧へ"></a></div>
+			
 			<div class="detail_button_area">
 				<form th:action="@{/item/list/admin}">
 				    <input type="submit" value="戻る"  class="back_button" />
