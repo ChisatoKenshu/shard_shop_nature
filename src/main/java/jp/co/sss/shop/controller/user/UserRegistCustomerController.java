@@ -87,7 +87,7 @@ public class UserRegistCustomerController {
 	 * @return "redirect:/user/regist/user_regist_complete" 会員情報 登録完了画面へ
 	 */
 	@RequestMapping(path = "/user/regist/complete",method = RequestMethod.POST)
-	public String registComplete(@ModelAttribute UserForm form) {
+	public String registComplete(@ModelAttribute UserForm form,HttpSession session) {
 		//会員情報の生成
 		User user = new User();
 		
@@ -95,6 +95,8 @@ public class UserRegistCustomerController {
 		BeanUtils.copyProperties(form,user);
 		
 		userRepository.save(user);
+		
+		
 		
 		return "redirect:/user/regist/complete";
 	}
