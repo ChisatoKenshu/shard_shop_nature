@@ -37,7 +37,7 @@
 					th:text="${items.get(favorite.itemId - 1).name}"></a></td>
 				<td th:text="${items.get(favorite.itemId - 1).price}"></td>
 				<td>
-					<th:block th:if="${items.get(favorite.itemId - 1).stock != 0}">
+					<th:block th:if="${items.get(favorite.itemId - 1).stock != 0 && items.get(favorite.itemId - 1).deleteFlag == 0}">
 						<form th:action="@{/basket/favorite/add}" method="post">
 							<input type="hidden" th:value="${items.get(favorite.itemId - 1).id}" name="id">
 							<input type="submit" value="買い物かごに入れる" class="basket_button">
@@ -45,6 +45,9 @@
 					</th:block>
 					<th:block th:unless="${items.get(favorite.itemId - 1).stock != 0}">
 						<div>在庫がありません</div>
+					</th:block>
+					<th:block th:if="${items.get(favorite.itemId - 1).deleteFlag == 1}">
+						<div>商品は削除されました</div>
 					</th:block>
 				</td>
 				<td>
