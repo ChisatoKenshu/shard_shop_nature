@@ -52,12 +52,12 @@
 				<td th:text="${item.category.name}"></td>
 				<td>
 					<th:block th:if="${session.user != null}">
-						<th:block th:if="!${#lists.isEmpty(favorites)}">
+						<th:block th:if="${favorites.get(item.id - 1).itemId == item.id}">
 							<form th:action="@{/item/favorite}" method="post" class="fav_form">
 								<button type="submit" th:id="${item.id}" th:value="${favorites.get(item.id - 1).isFav}">☆</button>
 							</form>
 						</th:block>
-						<th:block th:unless="!${#lists.isEmpty(favorites)}">
+						<th:block th:unless="!${favorites.get(item.id - 1).itemId == item.id}">
 							<form th:action="@{/item/favorite}" method="post" class="fav_form">
 								<button type="submit" th:id="${item.id}" th:value="0">☆</button>
 							</form>

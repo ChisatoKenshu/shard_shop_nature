@@ -72,8 +72,9 @@ public class ItemShowCustomerController {
 	public String showItemList(@PathVariable int sortType, Model model, HttpSession session) {
 		if(session.getAttribute("user") != null) {
 			Integer userId = ((UserBean) session.getAttribute("user")).getId();
+			List<Favorite> testList = new ArrayList<Favorite>(itemRepository.findByDeleteFlag(0).size());
 			List<Favorite> favorites = favoriteRepository.findByUserIdOrderByItemId(userId);
-			model.addAttribute("favorites", favorites);	
+			model.addAttribute("favorites", favorites);
 		}
 		if (sortType == 1) {
 			model.addAttribute("items", itemRepository.findByDeleteFlagOrderByInsertDateDescIdAsc(0));

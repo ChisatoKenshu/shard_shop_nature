@@ -59,9 +59,9 @@
 			<!-- <version>12.1.0.2</version> -->
 			<scope>system</scope>
 			<!-- ※AWSへのデプロイ時には下記をコメントアウトしてください。 -->
-			<systemPath>${basedir}/src/main/resources/lib/ojdbc7.jar</systemPath>
-			<!-- ※AWSへのデプロイ時には下記のコメントアウトを外してください。 -->
 			<!-- <systemPath>${basedir}/lib/ojdbc7.jar</systemPath> -->
+			<!-- ※AWSへのデプロイ時には下記のコメントアウトを外してください。 -->
+			<systemPath>${basedir}/lib/ojdbc7.jar</systemPath>
 		</dependency>
 	</dependencies>
 

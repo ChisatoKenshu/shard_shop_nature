@@ -117,7 +117,6 @@ public class BasketCustomerController {
 			}
 			cnt++;
 		}
-		model.addAttribute("isStockGreaterThanOrderNum", true);
 		session.setAttribute("basketBeanList", basketBeanList);
 		return "redirect:/basket/list";
 	}
@@ -126,13 +125,12 @@ public class BasketCustomerController {
 	public String deleteAll(HttpSession session, Model model) {
 		List<BasketBean> basketBeanList = (List<BasketBean>) session.getAttribute("basketBeanList");
 		basketBeanList.clear();
-		model.addAttribute("isStockGreaterThanOrderNum", true);
 		session.setAttribute("basketBeanList", basketBeanList);
 		return "redirect:/basket/list";
 	}
 	
 	@RequestMapping("/basket/favorite/add")
-	public String addFavoriteItem(Model model, HttpSession session, BasketForm basketForm) {
+	public String addFavoriteItem(Model model, HttpSession session, BasketForm basketForm, RedirectAttributes redirectAttributes) {
 		//初期値設定
 		int id =  basketForm.getId();
 		Item item = itemRepository.getById(id);
@@ -140,7 +138,6 @@ public class BasketCustomerController {
 		List<BasketBean> basketBeanList = new ArrayList<BasketBean>();
 		BasketBean basketBean = new BasketBean(id, item.getName(), item.getStock());
 		boolean isBasketListExistId = false;
-		boolean isStockGreaterThanOrderNum = true;
 		
 		//sessionの買い物かごリストがnull or 空かどうか判定
 		if(sessionBasketBeanList == null || sessionBasketBeanList.isEmpty()) {
@@ -158,7 +155,9 @@ public class BasketCustomerController {
 						int getOrderNum  = basketBeanCol.getOrderNum() + 1;
 						basketBeanList.get(cnt).setOrderNum(getOrderNum);
 					}else {
-						isStockGreaterThanOrderNum = false;
+						//在庫よりもorder数が多くなる時
+						String basketName = basketBeanCol.getName();
+						redirectAttributes.addFlashAttribute("basketName", basketName);
 					}
 					model.addAttribute("basket", basketBeanCol);
 					isBasketListExistId = false;
@@ -180,7 +179,6 @@ public class BasketCustomerController {
 		favorite.setIsFav(0);
 		favoriteRepository.save(favorite);
 		
-		model.addAttribute("isStockGreaterThanOrderNum", isStockGreaterThanOrderNum);
 		session.setAttribute("basketBeanList", basketBeanList);
 		return "redirect:/basket/list";
 	}
