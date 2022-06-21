@@ -31,6 +31,8 @@
 				</dl>
 			</div>
 			
+			<div><a th:href="@{/review/list/{id}(id=${item.id})}" th:text="レビュー一覧へ"></a></div>
+			
 			<div class="detail_button_area">
 				<th:block th:if="${item.stock != 0}">
 					<form th:action="@{/basket/add}" method="post">
