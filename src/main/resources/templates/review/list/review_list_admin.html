@@ -26,16 +26,16 @@
 			<span th:text="${review.title}"></span>
 			<p th:text="${review.insertDate}"></p>
 			<div class="review_text" th:text="${review.reviewText}"></div>
-		</div>
-		<div class="operation">
-			<form th:action="@{/review/delete}" class="delete_button_area" method="POST">
-				<input type="hidden" name="id" th:value="${review.id}" />
-				<input type="submit" value="削除" />
-			</form>
-			<form th:action="@{/review/permission}" class="permission_button_area" method="POST">
-				<input type="hidden" name="id" th:value="${review.id}" />
-				<input type="submit" value="表示切替" />
-			</form>
+			<div class="operation">
+				<form th:action="@{/review/delete/admin}" class="delete_button_area" method="POST">
+					<input type="hidden" name="id" th:value="${review.id}" />
+					<input type="submit" value="削除" />
+				</form>
+				<form th:action="@{/review/permission}" class="permission_button_area" method="POST">
+					<input type="hidden" name="id" th:value="${review.id}" />
+					<input type="submit" value="表示切替" />
+				</form>
+			</div>
 		</div>
 	</div>
 </body>

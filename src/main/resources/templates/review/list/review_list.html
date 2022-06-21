@@ -1,10 +1,43 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+<title>レビュー一覧 | シェアードショップ</title>
+<meta charset="UTF-8" />
 </head>
-<body>
-
+<body class="order_list">
+	<h2 class="title">レビュー</h2>
+	<div class="item_information">
+		<span th:if="${item.image != null}">
+			<img th:src="@{/img/{image}(image=${item.image})}"></img>
+		</span>
+		<span th:if="${item.image == null}">
+			<img th:src="@{/img/common/no_image.jpg}"></img>
+		</span>
+		<span th:text="${item.name}"></span>
+		<div th:if="${userId != null}">
+			<form th:action="@{/review/regist/input/{id}(id=${item.id})}" class="delete_button_area" method="POST">
+				<input type="submit" value="レビューを書く" />
+			</form>
+		</div>
+	</div>
+	<div th:if="${#lists.isEmpty(reviews)}">
+		<p th:text="#{reviews.none}"></p>
+	</div>
+	<div class="list" th:if="!${#lists.isEmpty(reviews)}">
+		<div class="review_infomation" th:each="review: ${reviews}">
+			<p th:text="${review.nickname}"></p>
+			<span th:text="${'評価値:' + review.evaluation}"></span>
+			<span th:text="${review.title}"></span>
+			<p th:text="${review.insertDate}"></p>
+			<div class="review_text" th:text="${review.reviewText}"></div>
+			<div class="operation" th:if="${review.user.id == userId}">
+				<form th:action="@{/review/delete/check}" class="delete_button_area" method="POST">
+					<input type="hidden" name="id" th:value="${review.id}" />
+					<input type="submit" value="削除" />
+				</form>
+			</div>
+		</div>
+	</div>
 </body>
 </html>

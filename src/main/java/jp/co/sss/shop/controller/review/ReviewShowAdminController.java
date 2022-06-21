@@ -57,7 +57,7 @@ public class ReviewShowAdminController {
 		// 商品IDに該当するレビュー情報を取得
 		List<Review> reviewList = reviewRepository.findByReviewWhereItemOrderByInsertDateDescQuery(id);
 
-		// 商品情報とレビュー情報をViewへ渡す
+		// 商品情報、レビュー情報をViewへ渡す
 		model.addAttribute("item", item);
 		model.addAttribute("reviews", reviewList);
 
