@@ -32,4 +32,5 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
 	@Query("SELECT i.id FROM Item i WHERE i.deleteFlag = 0 AND i.category.id = :id")
 	public List<Integer> findIdByCategoryWithQuery(Integer id);
 
+	public List<Item> findByDeleteFlag(int deleteFlag);
 }
