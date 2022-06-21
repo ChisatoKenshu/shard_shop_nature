@@ -72,6 +72,7 @@ public class FavoriteCustomerController {
 			Item empItem = new Item();
 			empItem.setId(i);
 			empItem.setName("no item");
+			empItem.setDeleteFlag(1);
 			sendItemList.add(empItem);
 			for(Item item : itemList) {
 				if(item.getId() == i) {

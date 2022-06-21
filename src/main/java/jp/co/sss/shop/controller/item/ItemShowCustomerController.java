@@ -70,41 +70,41 @@ public class ItemShowCustomerController {
 	
 	@RequestMapping(path = "/item/list/{sortType}")
 	public String showItemList(@PathVariable int sortType, Model model, HttpSession session) {
-		//ログインしているかどうか確認
-		if(session.getAttribute("user") != null) {
-			Integer userId = ((UserBean) session.getAttribute("user")).getId();
-			List<Item> items = itemRepository.findByDeleteFlagOrderByInsertDateDescIdAsc(0);
-			List<Favorite> favorites = favoriteRepository.findByUserIdOrderByItemId(userId);
-			List<Favorite> emptyList = new ArrayList<Favorite>();
-			for(Item item : items) {
-				Favorite emptyFav = new Favorite();
-				emptyFav.setIsFav(0);
-				emptyFav.setItemId(item.getId());
-				emptyList.add(emptyFav);
+		if (sortType == 1) {
+			//ログインしているかどうか確認
+			if(session.getAttribute("user") != null) {
+				Integer userId = ((UserBean) session.getAttribute("user")).getId();
+				List<Item> items = itemRepository.findByDeleteFlagOrderByInsertDateDescIdAsc(0);
+				List<Favorite> favorites = favoriteRepository.findByUserIdOrderByItemId(userId);
+				List<Favorite> emptyList = new ArrayList<Favorite>();
+				for(Item item : items) {
+					Favorite emptyFav = new Favorite();
+					emptyFav.setIsFav(0);
+					emptyFav.setItemId(item.getId());
+					emptyList.add(emptyFav);
+				}
+				
+				int cnt = 0;
+				for(Favorite fav : emptyList) {
+					for(Favorite fav2 : favorites) {
+						try {
+							if(fav2.getItemId() == fav.getItemId()) {
+								emptyList.set(cnt, fav2);
+								break;
+							}else {
+								Favorite emptyFav = new Favorite();
+								emptyFav.setItemId(fav.getItemId());
+								emptyFav.setIsFav(fav.getIsFav());
+								emptyList.set(cnt, emptyFav);
+							}
+						}catch(IndexOutOfBoundsException e){
+						}
+					}
+					cnt++;
+				}
+				model.addAttribute("favorites", emptyList);
 			}
 			
-			int cnt = 0;
-			for(Favorite fav : emptyList) {
-				for(Favorite fav2 : favorites) {
-					try {
-						if(fav2.getItemId() == fav.getItemId()) {
-							emptyList.set(cnt, fav2);
-							break;
-						}else {
-							Favorite emptyFav = new Favorite();
-							emptyFav.setItemId(fav.getItemId());
-							emptyFav.setIsFav(fav.getIsFav());
-							emptyList.set(cnt, emptyFav);
-						}
-					}catch(IndexOutOfBoundsException e){
-					}
-				}
-				cnt++;
-			}
-			model.addAttribute("favorites", emptyList);
-		}
-		
-		if (sortType == 1) {
 			model.addAttribute("items", itemRepository.findByDeleteFlagOrderByInsertDateDescIdAsc(0));
 		} else {
 			List<Integer> itemIdSort = orderItemRepository.findIdSUMDescWithQuery();
@@ -117,6 +117,39 @@ public class ItemShowCustomerController {
 						break;
 					}
 				}
+			}
+			
+			//ログインしているかどうか確認
+			if(session.getAttribute("user") != null) {
+				Integer userId = ((UserBean) session.getAttribute("user")).getId();
+				List<Favorite> favorites = favoriteRepository.findByUserIdOrderByItemId(userId);
+				List<Favorite> emptyList = new ArrayList<Favorite>();
+				for(Item eitem : item) {
+					Favorite emptyFav = new Favorite();
+					emptyFav.setIsFav(0);
+					emptyFav.setItemId(eitem.getId());
+					emptyList.add(emptyFav);
+				}
+				
+				int cnt = 0;
+				for(Favorite fav : emptyList) {
+					for(Favorite fav2 : favorites) {
+						try {
+							if(fav2.getItemId() == fav.getItemId()) {
+								emptyList.set(cnt, fav2);
+								break;
+							}else {
+								Favorite emptyFav = new Favorite();
+								emptyFav.setItemId(fav.getItemId());
+								emptyFav.setIsFav(fav.getIsFav());
+								emptyList.set(cnt, emptyFav);
+							}
+						}catch(IndexOutOfBoundsException e){
+						}
+					}
+					cnt++;
+				}
+				model.addAttribute("favorites", emptyList);
 			}
 			model.addAttribute("items", item);
 			model.addAttribute("sortType", "2");
@@ -140,16 +173,33 @@ public class ItemShowCustomerController {
 
 	@RequestMapping(path = "/item/list/category/{sortType}")
 	public String showItemListCategory(@PathVariable int sortType, Integer categoryId, Model model, HttpSession session) {
+		List<Integer> itemIdSort = new ArrayList<>();
+		if (sortType == 1) {
+			itemIdSort = itemRepository.findIdOrderByInsertDateDescWithQuery();
+		} else {
+			itemIdSort = orderItemRepository.findIdSUMDescWithQuery();
+			model.addAttribute("sortType", "2");
+		}
+		List<Integer> itemIdCategory = itemRepository.findIdByCategoryWithQuery(categoryId);
+		List<Item> item = new ArrayList<>();
+		for (Integer idSort : itemIdSort) {
+			for (Integer idCategory : itemIdCategory) {
+				if (idSort == idCategory) {
+					item.add(itemRepository.getById(idSort));
+					break;
+				}
+			}
+		}
+		
 		//ログインしているかどうか確認
 		if(session.getAttribute("user") != null) {
 			Integer userId = ((UserBean) session.getAttribute("user")).getId();
-			List<Item> items = itemRepository.findByDeleteFlagOrderByInsertDateDescIdAsc(0);
 			List<Favorite> favorites = favoriteRepository.findByUserIdOrderByItemId(userId);
 			List<Favorite> emptyList = new ArrayList<Favorite>();
-			for(Item item : items) {
+			for(Item eItem : item) {
 				Favorite emptyFav = new Favorite();
 				emptyFav.setIsFav(0);
-				emptyFav.setItemId(item.getId());
+				emptyFav.setItemId(eItem.getId());
 				emptyList.add(emptyFav);
 			}
 			
@@ -174,23 +224,6 @@ public class ItemShowCustomerController {
 			model.addAttribute("favorites", emptyList);
 		}
 		
-		List<Integer> itemIdSort = new ArrayList<>();
-		if (sortType == 1) {
-			itemIdSort = itemRepository.findIdOrderByInsertDateDescWithQuery();
-		} else {
-			itemIdSort = orderItemRepository.findIdSUMDescWithQuery();
-			model.addAttribute("sortType", "2");
-		}
-		List<Integer> itemIdCategory = itemRepository.findIdByCategoryWithQuery(categoryId);
-		List<Item> item = new ArrayList<>();
-		for (Integer idSort : itemIdSort) {
-			for (Integer idCategory : itemIdCategory) {
-				if (idSort == idCategory) {
-					item.add(itemRepository.getById(idSort));
-					break;
-				}
-			}
-		}
 		model.addAttribute("items", item);
 		model.addAttribute("categoryId", categoryId);
 		
