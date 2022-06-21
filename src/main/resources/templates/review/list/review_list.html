@@ -15,7 +15,7 @@
 			<img th:src="@{/img/common/no_image.jpg}"></img>
 		</span>
 		<span th:text="${item.name}"></span>
-		<div th:if="${userId != null}">
+		<div th:if="${session.user != null}">
 			<form th:action="@{/review/regist/input/{id}(id=${item.id})}" class="delete_button_area" method="POST">
 				<input type="submit" value="レビューを書く" />
 			</form>
@@ -31,7 +31,7 @@
 			<span th:text="${review.title}"></span>
 			<p th:text="${review.insertDate}"></p>
 			<div class="review_text" th:text="${review.reviewText}"></div>
-			<div class="operation" th:if="${review.user.id == userId}">
+			<div class="operation" th:if="${(session.user != null) && (review.user.id == session.user.id)}">
 				<form th:action="@{/review/delete/check}" class="delete_button_area" method="POST">
 					<input type="hidden" name="id" th:value="${review.id}" />
 					<input type="submit" value="削除" />

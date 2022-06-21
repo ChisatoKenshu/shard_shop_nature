@@ -10,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import jp.co.sss.shop.bean.UserBean;
 import jp.co.sss.shop.entity.Item;
 import jp.co.sss.shop.entity.Review;
 import jp.co.sss.shop.repository.ItemRepository;
@@ -47,17 +46,13 @@ public class ReviewShowCustomerController {
 	@RequestMapping(path = "/review/list/{id}")
 	public String showReviewList(@PathVariable int id, Model model, HttpSession session) {
 		
-		// セッションからユーザIDを取得
-		Integer userId = ((UserBean)session.getAttribute("user")).getId();
-
 		// 商品IDに該当する商品情報を取得
 		Item item = itemRepository.getById(id);
 
 		// 商品IDに該当する表示許可設定のレビュー情報を取得
 		List<Review> reviewList = reviewRepository.findByReviewWhereItemANDPermissionFlagOrderByInsertDateDescQuery(id);
 
-		// ユーザID、商品情報、レビュー情報をViewへ渡す
-		model.addAttribute("userId", userId);
+		// 商品情報、レビュー情報をViewへ渡す
 		model.addAttribute("item", item);
 		model.addAttribute("reviews", reviewList);
 
