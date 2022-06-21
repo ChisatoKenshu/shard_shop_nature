@@ -39,5 +39,10 @@
 			</div>
 		</div>
 	</div>
+	<div class="review_button_area">
+		<form th:action="@{/item/detail/{id}(id=${item.id})}">
+			<input type="submit" value="戻る"  class="back_button" />
+		</form>
+	</div>
 </body>
 </html>
