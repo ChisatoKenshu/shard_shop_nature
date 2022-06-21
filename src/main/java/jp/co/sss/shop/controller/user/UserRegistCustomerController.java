@@ -96,7 +96,14 @@ public class UserRegistCustomerController {
 		
 		userRepository.save(user);
 		
+		User users = userRepository.findByEmail(form.getEmail());
 		
+		UserBean userBean = new UserBean();
+		
+		// Userエンティティの各フィールドの値をUserBeanにコピー
+	    BeanUtils.copyProperties(users, userBean);
+		
+	    session.setAttribute("user",userBean);
 		
 		return "redirect:/user/regist/complete";
 	}
