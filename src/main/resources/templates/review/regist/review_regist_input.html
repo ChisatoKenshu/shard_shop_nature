@@ -19,7 +19,7 @@
 	
 	<p>登録するレビュー情報を入力してください。</p>
 	<div class="user_info_form_area">
-		<form th:action="@{/review/regist/check}" enctype="multipart/form-data"
+		<form th:action="@{/review/regist/check/} + ${item.id}" enctype="multipart/form-data"
 			method="post" class="user_info_form" th:object="${reviewForm}">
 
 			<ul th:if="${#fields.hasErrors('*')}" th:class="input_list">
@@ -28,8 +28,12 @@
 			</ul>
 
 			<ul class="input_list">
-				<li><label> <span class="input_title">評価値</span> <input
-						type="text" name="evaluation" th:value="${reviewForm.evaluation}" />
+				<li><label> <span class="input_title">評価値</span><br>
+				<span th:each="evaluation : ${evaluations}"><input type="radio"
+						name="evaluation"
+						th:value="${evaluation.key}"
+						th:text="${evaluation.value}"
+						th:checked="${evaluation.key == reviewForm.evaluation}" /></span>
 				</label> <span class="error_message"></span></li>
 				
 				<li><label> <span class="input_title">ニックネーム</span> <input
@@ -46,7 +50,7 @@
 			</ul>
 			<input type="submit" value="確認" class="send_button" />
 		</form>
-		<form th:action="@{/review/regist/admin}" method="get">
+		<form th:action="@{/review/list/} + ${item.id}" method="get">
 			<input type="submit" value="戻る" class="back_button" />
 		</form>
 	</div>

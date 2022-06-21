@@ -2,9 +2,10 @@ package jp.co.sss.shop.form;
 
 import java.sql.Date;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import jp.co.sss.shop.entity.Item;
@@ -36,7 +37,8 @@ public class ReviewForm {
 	 * 評価値
 	 */
 	@NotNull
-	@Pattern(regexp = "^[1-5]$")
+	@Max(5)
+	@Min(1)
 	private Integer evaluation;
 	
 	/**
