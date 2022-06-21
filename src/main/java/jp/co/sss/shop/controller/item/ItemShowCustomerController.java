@@ -74,6 +74,7 @@ public class ItemShowCustomerController {
 		if(session.getAttribute("user") != null) {
 			Integer userId = ((UserBean) session.getAttribute("user")).getId();
 			List<Item> items = itemRepository.findByDeleteFlagOrderByInsertDateDescIdAsc(0);
+			List<Favorite> favorites = favoriteRepository.findByUserIdOrderByItemId(userId);
 			List<Favorite> emptyList = new ArrayList<Favorite>();
 			for(Item item : items) {
 				Favorite emptyFav = new Favorite();
@@ -81,30 +82,26 @@ public class ItemShowCustomerController {
 				emptyFav.setItemId(item.getId());
 				emptyList.add(emptyFav);
 			}
-			List<Favorite> favorites = favoriteRepository.findByUserIdOrderByItemId(userId);
-			if(emptyList.size() > favorites.size()) {
-				int cnt = 0;
-				for(Favorite fav : emptyList) {
-					for(Favorite fav2 : favorites) {
-						try {
-							if(fav2.getItemId() == fav.getItemId()) {
-								emptyList.set(cnt, fav2);
-							}else {
-								Favorite emptyFav = new Favorite();
-								emptyFav.setItemId(fav.getItemId());
-								emptyFav.setIsFav(fav.getIsFav());
-								emptyList.set(cnt, emptyFav);
-							}
-						}catch(IndexOutOfBoundsException e){
-							
+			
+			int cnt = 0;
+			for(Favorite fav : emptyList) {
+				for(Favorite fav2 : favorites) {
+					try {
+						if(fav2.getItemId() == fav.getItemId()) {
+							emptyList.set(cnt, fav2);
+							break;
+						}else {
+							Favorite emptyFav = new Favorite();
+							emptyFav.setItemId(fav.getItemId());
+							emptyFav.setIsFav(fav.getIsFav());
+							emptyList.set(cnt, emptyFav);
 						}
+					}catch(IndexOutOfBoundsException e){
 					}
-					cnt++;
 				}
-				model.addAttribute("favorites", emptyList);
-			}else {
-				model.addAttribute("favorites", favorites);
+				cnt++;
 			}
+			model.addAttribute("favorites", emptyList);
 		}
 		
 		if (sortType == 1) {
@@ -147,6 +144,7 @@ public class ItemShowCustomerController {
 		if(session.getAttribute("user") != null) {
 			Integer userId = ((UserBean) session.getAttribute("user")).getId();
 			List<Item> items = itemRepository.findByDeleteFlagOrderByInsertDateDescIdAsc(0);
+			List<Favorite> favorites = favoriteRepository.findByUserIdOrderByItemId(userId);
 			List<Favorite> emptyList = new ArrayList<Favorite>();
 			for(Item item : items) {
 				Favorite emptyFav = new Favorite();
@@ -154,30 +152,26 @@ public class ItemShowCustomerController {
 				emptyFav.setItemId(item.getId());
 				emptyList.add(emptyFav);
 			}
-			List<Favorite> favorites = favoriteRepository.findByUserIdOrderByItemId(userId);
-			if(emptyList.size() > favorites.size()) {
-				int cnt = 0;
-				for(Favorite fav : emptyList) {
-					for(Favorite fav2 : favorites) {
-						try {
-							if(fav2.getItemId() == fav.getItemId()) {
-								emptyList.set(cnt, fav2);
-							}else {
-								Favorite emptyFav = new Favorite();
-								emptyFav.setItemId(fav.getItemId());
-								emptyFav.setIsFav(fav.getIsFav());
-								emptyList.set(cnt, emptyFav);
-							}
-						}catch(IndexOutOfBoundsException e){
-							
+			
+			int cnt = 0;
+			for(Favorite fav : emptyList) {
+				for(Favorite fav2 : favorites) {
+					try {
+						if(fav2.getItemId() == fav.getItemId()) {
+							emptyList.set(cnt, fav2);
+							break;
+						}else {
+							Favorite emptyFav = new Favorite();
+							emptyFav.setItemId(fav.getItemId());
+							emptyFav.setIsFav(fav.getIsFav());
+							emptyList.set(cnt, emptyFav);
 						}
+					}catch(IndexOutOfBoundsException e){
 					}
-					cnt++;
 				}
-				model.addAttribute("favorites", emptyList);
-			}else {
-				model.addAttribute("favorites", favorites);
+				cnt++;
 			}
+			model.addAttribute("favorites", emptyList);
 		}
 		
 		List<Integer> itemIdSort = new ArrayList<>();

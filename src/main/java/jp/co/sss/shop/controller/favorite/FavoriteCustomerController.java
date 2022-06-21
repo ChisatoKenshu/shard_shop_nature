@@ -1,6 +1,9 @@
 package jp.co.sss.shop.controller.favorite;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import javax.servlet.http.HttpSession;
 
@@ -60,10 +63,26 @@ public class FavoriteCustomerController {
 	public String favoriteList(Model model, HttpSession session) {
 		Integer userId = ((UserBean) session.getAttribute("user")).getId();
 		List<Favorite> favoriteList = favoriteRepository.findByUserIdAndIsFav(userId, 1);
-		List<Item> itemList = itemRepository.findAll();
+		List<Item> itemList = itemRepository.findByDeleteFlag(0);
+		List<Item> sendItemList = new ArrayList<Item>();
+		//deleteFlagが0で最大のitemIdを取得
+		int maxItemId = itemList.stream().max(Comparator.comparing(Item::getId)).orElseThrow(NoSuchElementException::new).getId();
+		
+		for(int i = 1; i <= maxItemId; i++) {
+			Item empItem = new Item();
+			empItem.setId(i);
+			empItem.setName("no item");
+			sendItemList.add(empItem);
+			for(Item item : itemList) {
+				if(item.getId() == i) {
+					sendItemList.set(i -1, item);
+					break;
+				}
+			}
+		}
 		
 		model.addAttribute("favorites", favoriteList);
-		model.addAttribute("items", itemList);
+		model.addAttribute("items", sendItemList);
 		return "favorite/favorite_list";
 	}
 	
