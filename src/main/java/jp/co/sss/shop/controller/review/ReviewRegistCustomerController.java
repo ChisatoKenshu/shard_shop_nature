@@ -90,5 +90,11 @@ public class ReviewRegistCustomerController {
 
 		return "review/regist/review_regist_check";
 	}
+	
+	@RequestMapping(path = "/review/regist/complete")
+	public String registComplete(Model model, ReviewForm reviewForm) {
+		
+		return "";
+	}
 
 }
