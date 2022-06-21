@@ -60,10 +60,11 @@ public class FavoriteCustomerController {
 	}
 	
 	@RequestMapping("/favorite/list")
-	public String favoriteList(Model model, HttpSession session) {
+	public String showFavorite(Model model, HttpSession session) {
 		Integer userId = ((UserBean) session.getAttribute("user")).getId();
 		List<Favorite> favoriteList = favoriteRepository.findByUserIdAndIsFav(userId, 1);
 		List<Item> itemList = itemRepository.findByDeleteFlag(0);
+		List<Favorite> sendFavoriteList = new ArrayList<Favorite>();
 		List<Item> sendItemList = new ArrayList<Item>();
 		//deleteFlagが0で最大のitemIdを取得
 		int maxItemId = itemList.stream().max(Comparator.comparing(Item::getId)).orElseThrow(NoSuchElementException::new).getId();
@@ -82,13 +83,22 @@ public class FavoriteCustomerController {
 			}
 		}
 		
-		model.addAttribute("favorites", favoriteList);
+		for(Favorite fav : favoriteList) {
+			for(Item item : itemList) {
+				if(fav.getItemId() == item.getId()) {
+					sendFavoriteList.add(fav);
+					break;
+				}
+			}
+		}
+		
+		model.addAttribute("favorites", sendFavoriteList);
 		model.addAttribute("items", sendItemList);
 		return "favorite/favorite_list";
 	}
 	
 	@RequestMapping("/favorite/delete")
-	public String favoriteDel(Model model, HttpSession session, Integer itemId) {
+	public String delFavorite(Model model, HttpSession session, Integer itemId) {
 		Integer userId = ((UserBean) session.getAttribute("user")).getId();
 		Favorite favorite = favoriteRepository.findByUserIdAndItemId(userId, itemId);
 		favorite.setIsFav(0);
