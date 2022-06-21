@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
+	th:replace="~{common/layout_4block :: layout(~{::title},~{::body/content()})}">
 <head>
 <title>レビュー一覧 | シェアードショップ</title>
 <meta charset="UTF-8" />
@@ -27,7 +27,7 @@
 			<p th:text="${review.insertDate}"></p>
 			<div class="review_text" th:text="${review.reviewText}"></div>
 			<div class="operation">
-				<form th:action="@{/review/delete/admin}" class="delete_button_area" method="POST">
+				<form th:action="@{/review/delete/check/admin}" class="delete_button_area" method="POST">
 					<input type="hidden" name="id" th:value="${review.id}" />
 					<input type="submit" value="削除" />
 				</form>
