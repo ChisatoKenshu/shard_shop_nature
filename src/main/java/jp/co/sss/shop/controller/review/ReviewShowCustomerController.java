@@ -15,7 +15,6 @@ import jp.co.sss.shop.entity.Item;
 import jp.co.sss.shop.entity.Review;
 import jp.co.sss.shop.repository.ItemRepository;
 import jp.co.sss.shop.repository.ReviewRepository;
-import jp.co.sss.shop.repository.UserRepository;
 
 /**
  * レビュー管理 一覧表示機能(運用管理者用)のコントローラクラス
@@ -38,18 +37,12 @@ public class ReviewShowCustomerController {
 	ItemRepository itemRepository;
 
 	/**
-	 * ユーザ情報
-	 */
-	@Autowired
-	UserRepository userRepository;
-
-	/**
-	 * 商品情報詳細表示処理
+	 * レビュー情報詳細表示処理
 	 *
-	 * @param id      商品ID
+	 * @param id      レビューID
 	 * @param model   Viewとの値受渡し
 	 * @param session セッション情報
-	 * @return "/item/detail/item_detail_admin" 商品情報 詳細画面へ
+	 * @return "/review/list/review_list" レビュー情報 一覧画面へ
 	 */
 	@RequestMapping(path = "/review/list/{id}")
 	public String showReviewList(@PathVariable int id, Model model, HttpSession session) {
@@ -60,8 +53,8 @@ public class ReviewShowCustomerController {
 		// 商品IDに該当する商品情報を取得
 		Item item = itemRepository.getById(id);
 
-		// 商品IDに該当するレビュー情報を取得
-		List<Review> reviewList = reviewRepository.findByReviewWhereItemOrderByInsertDateDescQuery(id);
+		// 商品IDに該当する表示許可設定のレビュー情報を取得
+		List<Review> reviewList = reviewRepository.findByReviewWhereItemANDPermissionFlagOrderByInsertDateDescQuery(id);
 
 		// ユーザID、商品情報、レビュー情報をViewへ渡す
 		model.addAttribute("userId", userId);

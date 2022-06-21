@@ -44,7 +44,7 @@ public class AdminAccountCheckFilter implements Filter {
 					HttpServletResponse httpResponse = (HttpServletResponse) response;
 
 					// ログイン画面にリダイレクト
-					httpResponse.sendRedirect(httpRequest.getContextPath() + "/login");
+					httpResponse.sendRedirect(httpRequest.getContextPath() + "/login?");
 				} else {
 					chain.doFilter(request, response);
 				}
@@ -74,6 +74,7 @@ public class AdminAccountCheckFilter implements Filter {
 				&& requestURL.indexOf("/item/regist") == -1
 				&& requestURL.indexOf("/item/update") == -1
 				&& requestURL.indexOf("/item/delete") == -1
+				&& requestURL.indexOf("/review") == -1
 				&& requestURL.indexOf("/logout") == -1) {
 			// URLのリクエスト先がフィルタ実行対象である場合
 			return true;
