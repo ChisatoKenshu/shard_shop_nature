@@ -1,8 +1,10 @@
 package jp.co.sss.shop.controller.review;
 
+import java.sql.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +15,15 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import jp.co.sss.shop.bean.UserBean;
 import jp.co.sss.shop.entity.Item;
+import jp.co.sss.shop.entity.Review;
 import jp.co.sss.shop.form.ReviewForm;
 import jp.co.sss.shop.repository.ItemRepository;
 import jp.co.sss.shop.repository.ReviewRepository;
+import jp.co.sss.shop.repository.UserRepository;
 
 @Controller
 public class ReviewRegistCustomerController {
@@ -33,6 +39,9 @@ public class ReviewRegistCustomerController {
 	 */
 	@Autowired
 	ItemRepository itemRepository;
+
+	@Autowired
+	UserRepository userRepository;
 
 	@RequestMapping(path = "/review/regist/input/{id}")
 	public String registInput(@PathVariable int id, Model model) {
@@ -59,7 +68,7 @@ public class ReviewRegistCustomerController {
 
 	@RequestMapping(path = "/item/regist/input/{id}", method = RequestMethod.POST)
 	public String registInputBack(@PathVariable int id, Model model, ReviewForm reviewForm) {
-		
+
 		// 商品IDに該当する商品情報を取得
 		Item item = itemRepository.getById(id);
 		model.addAttribute("item", item);
@@ -77,9 +86,9 @@ public class ReviewRegistCustomerController {
 	}
 
 	@RequestMapping(path = "/review/regist/check/{id}")
-	public String registCheck(@PathVariable int id, Model model,
-			@Valid @ModelAttribute ReviewForm reviewForm, BindingResult result) {
-		
+	public String registCheck(@PathVariable int id, Model model, @Valid @ModelAttribute ReviewForm reviewForm,
+			BindingResult result) {
+
 		if (result.hasErrors()) {
 			return "item/regist/item_regist_input";
 		}
@@ -89,6 +98,49 @@ public class ReviewRegistCustomerController {
 		model.addAttribute("item", item);
 
 		return "review/regist/review_regist_check";
+	}
+
+	@RequestMapping(path = "/review/regist/complete")
+	public String registComplete(Model model, ReviewForm reviewForm, int itemId, HttpSession session,
+			RedirectAttributes redirectAttributes) {
+
+		// Formクラス内の各フィールドの値をエンティティにコピー
+		Review review = new Review();
+
+		review.setItem(itemRepository.getById(itemId));
+
+		Integer userId = ((UserBean) session.getAttribute("user")).getId();
+		review.setUser(userRepository.getById(userId));
+
+		review.setEvaluation(reviewForm.getEvaluation());
+		review.setTitle(reviewForm.getTitle());
+		review.setNickname(reviewForm.getNickname());
+		review.setReviewText(reviewForm.getReviewText());
+
+		// 現在の日時を登録日時としてレビュー情報に追加
+		long nowDate = System.currentTimeMillis();
+		Date date = new Date(nowDate);
+		review.setInsertDate(date);
+
+		// 商品情報を保存
+		reviewRepository.save(review);
+
+		// 削除対象のレビュー情報から商品IDを取得しリダイレクト先に受け渡す
+		redirectAttributes.addFlashAttribute("itemId", itemId);
+
+		return "redirect:/review/regist/complete";
+	}
+
+	@RequestMapping(path = "/review/regist/complete", method = RequestMethod.GET)
+	public String registCompleteRedirect(Model model) {
+
+		// リダイレクト前に受け渡した情報を取得
+		Integer itemId = (Integer) model.getAttribute("itemId");
+
+		// レビュー情報をViewに渡す
+		model.addAttribute("itemId", itemId);
+
+		return "review/regist/review_regist_complete";
 	}
 
 }

@@ -1,10 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
 <head>
+<title>商品登録確認 | シェアードショップ</title>
 <meta charset="UTF-8">
-<title>Insert title here</title>
 </head>
-<body>
+<body class="user">
+	<h2 class="title">レビュー登録完了</h2>
+	<p class="complete_message">レビュー登録が完了しました。</p>
+	<p class="complete_link">
+		<a th:href="@{/review/list/} + ${itemId}">レビュー一覧へ戻る</a>
+	</p>
 
 </body>
 </html>
