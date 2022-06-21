@@ -46,7 +46,7 @@
 				<input type="submit" value="登録" class="send_button" />
 				</form>
 				
-				<form th:action="@{/item/regist/input/} + ${item.id}" method="post" class="user_info_form">
+				<form th:action="@{/review/regist/input/} + ${item.id}" method="post" class="user_info_form">
 				<input type="hidden" name="evaluation" th:value="${reviewForm.evaluation}" />
 				<input type="hidden" name="nickname" th:value="${reviewForm.nickname}" />
 				<input type="hidden" name="title" th:value="${reviewForm.title}" />
