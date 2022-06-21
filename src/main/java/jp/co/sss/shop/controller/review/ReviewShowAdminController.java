@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import jp.co.sss.shop.entity.Item;
 import jp.co.sss.shop.entity.Review;
@@ -41,12 +42,11 @@ public class ReviewShowAdminController {
 	UserRepository userRepository;
 
 	/**
-	 * 商品情報詳細表示処理
+	 * レビュー情報一覧表示処理
 	 *
-	 * @param id      商品ID
+	 * @param id      レビューID
 	 * @param model   Viewとの値受渡し
-	 * @param session セッション情報
-	 * @return "/item/detail/item_detail_admin" 商品情報 詳細画面へ
+	 * @return "/review/list/review_list_admin" レビュー情報 一覧画面へ
 	 */
 	@RequestMapping(path = "/review/list/admin/{id}")
 	public String showReviewList(@PathVariable int id, Model model) {
@@ -62,6 +62,32 @@ public class ReviewShowAdminController {
 		model.addAttribute("reviews", reviewList);
 
 		return "review/list/review_list_admin";
+	}
+	
+	/**
+	 * レビュー情報表示切替処理
+	 *
+	 * @param id      商品ID
+	 * @param reviewId   レビューID
+	 * @return "/review/list/review_list_admin" レビュー情報 一覧画面へ
+	 */
+	@RequestMapping(path = "/review/permission_switching/admin/{id}", method = RequestMethod.POST)
+	public String permissionSwitching(@PathVariable int id, Integer reviewId) {
+
+		// レビュー情報を取得
+		Review review = reviewRepository.getById(reviewId);
+		
+		// 表示許可フラグを切り替え
+		if (review.getPermissionFlag() == 0) {
+			review.setPermissionFlag(1);
+		} else {
+			review.setPermissionFlag(0);
+		}
+		
+		// レビュー情報を上書き
+		reviewRepository.save(review);
+
+		return "redirect:/review/list/admin/" + id;
 	}
 
 }

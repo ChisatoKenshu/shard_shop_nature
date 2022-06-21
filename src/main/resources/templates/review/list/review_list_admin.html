@@ -31,10 +31,12 @@
 					<input type="hidden" name="id" th:value="${review.id}" />
 					<input type="submit" value="削除" />
 				</form>
-				<form th:action="@{/review/permission}" class="permission_button_area" method="POST">
-					<input type="hidden" name="id" th:value="${review.id}" />
-					<input type="submit" value="表示切替" />
+				<form th:action="@{/review/permission_switching/admin/{id}(id=${item.id})}" class="permission_button_area" method="POST">
+					<input type="hidden" name="reviewId" th:value="${review.id}" />
+					<input type="submit" value="表示切替" onClick="return confirmation();" />
 				</form>
+				<span th:if="${review.permissionFlag == 0}" th:text="非表示"></span>
+				<span th:if="${review.permissionFlag == 1}" th:text="表示中"></span>
 			</div>
 		</div>
 	</div>
