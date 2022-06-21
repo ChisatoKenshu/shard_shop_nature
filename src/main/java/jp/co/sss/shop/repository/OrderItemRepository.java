@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import jp.co.sss.shop.entity.Category;
+import jp.co.sss.shop.entity.Item;
 import jp.co.sss.shop.entity.OrderItem;
 
 /**
@@ -22,5 +24,14 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Integer> {
 	//購入された商品の商品Idを検索
 	@Query("select oi.item.id from OrderItem oi")
 	public List<Integer> findIdWithQuery();
+	
+	/** 購入された商品のカテゴリーIdを検索*/
+	@Query("select i.category.id from Item i")
+	public Integer findCategoryIdById(Integer id);
+	
+	//商品情報をカテゴリーIdで検索
+	@Query("select i from Item i where i.deleteFlag = 0 and i.category.id = :category")
+	public List<Item> findByDeleteFlagAndCategoryId(Category category);
+
 
 }
