@@ -67,8 +67,12 @@ public class ItemShowCustomerController {
 		model.addAttribute("items", item);
 
 		Integer id;
+		List<Item> items = new ArrayList<>();
+		
 		// 購入された商品の商品Idを検索
-		List<Integer> itemId = orderItemRepository.findIdWithQuery();
+		List<Integer> itemId = orderItemRepository.findItemIdWithQuery();
+		
+
 
 		for (Integer i = 0; i < itemId.size(); i++) {
 
@@ -79,12 +83,19 @@ public class ItemShowCustomerController {
 			Category category = new Category();
 
 			// Category のオブジェクト内の id フィールドに検索したIdを代入
-						category.setId(itemRepository.findCategoryIdById(id));
+			category.setId(itemRepository.findCategoryIdById(id));
 
-						List<Item> items = itemRepository.findByDeleteFlagAndCategory(0,category);
-
-						model.addAttribute("OItem", items);
+			List<Item> OItem = itemRepository.findByDeleteFlagAndCategory(0,category);
+			
+			for(Item Oitem : OItem) {
+				if(Oitem.getId() != id) {
+				items.add(Oitem);
+				}
+			}
+			
+			
 		}
+		model.addAttribute("OItems", items);
 		return "index";
 	}
 

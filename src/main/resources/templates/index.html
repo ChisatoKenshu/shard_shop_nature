@@ -17,9 +17,21 @@
 				<img th:src="@{/img/common/no_image.jpg}"></img>
 			</span>
 		</a>
-		<h2>オススメ商品</h2>
+		</div>
+	<div>ここからオススメ</div>
+	<div class="item" th:if="!${#lists.isEmpty(OItems)}" th:each="OItem: ${OItems}" >
+	<div class="item_name" th:text="${OItem.name}"></div>
+	<a th:href="@{/item/detail/{id}(id=${OItem.id})}">
+		
+			<span th:if="${OItem.image != null}">
+				<img th:src="@{/img/{image}(image=${OItem.image})}"></img>
+			</span>
+			<span th:if="${OItem.image == null}">
+				<img th:src="@{/img/common/no_image.jpg}"></img>
+			</span>
+		
+		</a>
 	</div>
-	
 
 </body>
 </html>

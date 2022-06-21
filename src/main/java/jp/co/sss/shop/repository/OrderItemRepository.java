@@ -22,8 +22,8 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Integer> {
 	
 	
 	//購入された商品の商品Idを検索
-	@Query("select oi.item.id from OrderItem oi")
-	public List<Integer> findIdWithQuery();
+	@Query("select distinct oi.item.id from OrderItem oi")
+	public List<Integer> findItemIdWithQuery();
 	
 	/** 購入された商品のカテゴリーIdを検索*/
 	@Query("select i.category.id from Item i")
