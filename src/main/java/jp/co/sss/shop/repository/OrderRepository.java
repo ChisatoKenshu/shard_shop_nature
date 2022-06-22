@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import jp.co.sss.shop.entity.Order;
+import jp.co.sss.shop.entity.User;
 import jp.co.sss.shop.util.JPQLConstant;
 
 /**
@@ -29,5 +30,5 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 	
 	//ユーザーIdでIdを検索
 	@Query("SELECT o.id FROM Order o where user.id= :userId" )
-	List<Integer> findIdByUserId(int userId);
+	List<Integer> findIdByUserId(User userId);
 }

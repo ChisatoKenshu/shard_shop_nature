@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import jp.co.sss.shop.bean.UserBean;
 import jp.co.sss.shop.entity.Category;
 import jp.co.sss.shop.entity.Item;
+import jp.co.sss.shop.entity.Order;
+import jp.co.sss.shop.entity.User;
 import jp.co.sss.shop.repository.ItemRepository;
 import jp.co.sss.shop.repository.OrderItemRepository;
 import jp.co.sss.shop.repository.OrderRepository;
@@ -77,22 +79,33 @@ public class ItemShowCustomerController {
 		// モデルにItemリストを渡す
 		model.addAttribute("items", item);
 		
-		
-		UserBean user = (UserBean) session.getAttribute("user");
-		
-		Integer userId = user.getId();
-		List<Integer> OId = orderRepository.findIdByUserId(userId);
-		
-		
 		Integer id;
 		List<Item> items = new ArrayList<>();
 		// 参照先テーブルに対応付けられたエンティティ Category のオブジェクトを生成
 		Category category = new Category();
 		
+		UserBean user = (UserBean) session.getAttribute("user");
+		Integer loginUserId = user.getId();
+		User userId = new User();
+		userId.setId(loginUserId);
+		
+		
+		Order order = new Order();
+		List<Integer> OId = orderRepository.findIdByUserId(userId);
+		for(int oId : OId) {
+			order.
+		}
+		
+		
+		
+		
 		List<Integer> categoryId = new ArrayList<>();
 		
 		
-		
+		Order order = new Order();
+		for(int oId : OId) {
+			
+		}
 		// 購入された商品の商品Idを検索
 		List<Integer> itemId = orderItemRepository.findItemIdWithQuery();
 		
