@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
+<head>
+<title>レビュー一覧 | シェアードショップ</title>
+<meta charset="UTF-8" />
+</head>
+<body class="review_list">
+	<h2 class="title">レビュー</h2>
+	<div class="item_information item_info_form_area review">
+		<div class="item_detail_area">
+			<div class="item_image_area">
+				<span th:if="${item.image != null}">
+					<img th:src="@{/img/{image}(image=${item.image})}"></img>
+				</span>
+				<span th:if="${item.image == null}">
+					<img th:src="@{/img/common/no_image.jpg}"></img>
+				</span>
+			</div>
+			<dl class="item_detail_list review">
+				<dt>商品名：</dt>
+				<dd th:text="${item.name}"></dd>
+				<dt></dt>
+				<dd th:if="${session.user != null}" class="upper_space">
+					<form th:action="@{/review/regist/input/{id}(id=${item.id})}" class="button_area" method="GET">
+						<input type="submit" value="レビューを書く" />
+					</form>
+				</dd>
+			</dl>
+		</div>
+	</div>
+	<div th:if="${#lists.isEmpty(reviews)}">
+		<p th:text="#{reviews.none}"></p>
+	</div>
+	<div class="list" th:if="!${#lists.isEmpty(reviews)}">
+		<div class="review_infomation" th:each="review: ${reviews}">
+			<div class="float_box">
+				<p th:text="${review.nickname}"></p>
+				<span th:text="${'評価値:☆' + review.evaluation}"></span>
+				<span th:text="${review.title}" class="left_space"></span>
+				<p th:text="${review.insertDate}"></p>
+			</div>
+			<div class="operation review" th:if="${(session.user != null) && (review.user.id == session.user.id)}">
+				<form th:action="@{/review/delete/check}" class="delete_button_area" method="POST">
+					<input type="hidden" name="id" th:value="${review.id}" />
+					<input type="submit" value="削除" />
+				</form>
+			</div>
+			<div class="review_text" th:text="${review.reviewText}"></div>
+		</div>
+	</div>
+	<div class="review_button_area back_button">
+		<form th:action="@{/item/detail/{id}(id=${item.id})}">
+			<input type="submit" value="戻る"  class="back_button" />
+		</form>
+	</div>
+</body>
+</html>

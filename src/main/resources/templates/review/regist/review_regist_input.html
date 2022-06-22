@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
+<head>
+<title>レビュー登録入力 | シェアードショップ</title>
+<meta charset="UTF-8">
+</head>
+<body class="user">
+	<h2 class="title">レビュー登録入力</h2>
+	<div class="item_information item_info_form_area review">
+		<div class="item_detail_area">
+			<div class="item_image_area">
+				<span th:if="${item.image != null}">
+					<img th:src="@{/img/{image}(image=${item.image})}"></img>
+				</span>
+				<span th:if="${item.image == null}">
+					<img th:src="@{/img/common/no_image.jpg}"></img>
+				</span>
+			</div>
+			<dl class="item_detail_list review">
+				<dt>商品名：</dt>
+				<dd th:text="${item.name}"></dd>
+			</dl>
+		</div>
+	</div>
+	
+	<p>登録するレビュー情報を入力してください。</p>
+	<div class="user_info_form_area">
+		<form th:action="@{/review/regist/check/} + ${item.id}" enctype="multipart/form-data"
+			method="post" class="user_info_form" th:object="${reviewForm}">
+
+			<ul th:if="${#fields.hasErrors('*')}" th:class="input_list">
+				<li th:each="err : ${#fields.errors('*')}" th:text="${err}"
+					th:class="error_list"></li>
+			</ul>
+
+			<ul class="input_list">
+				<li><label> <span class="input_title">評価値</span><br>
+				<span th:each="evaluation : ${evaluations}" class="review_button_evaluation"><input type="radio"
+						name="evaluation"
+						th:value="${evaluation.key}"
+						th:text="${evaluation.value}"
+						th:checked="${evaluation.key == reviewForm.evaluation}" /></span>
+				</label> <span class="error_message"></span></li>
+				
+				<li><label> <span class="input_title">ニックネーム</span> <input
+						type="text" name="nickname" th:value="${reviewForm.nickname}" />
+				</label> <span class="error_message"></span></li>
+				
+				<li><label> <span class="input_title">タイトル</span> <input
+						type="text" name="title" th:value="${reviewForm.title}" />
+				</label> <span class="error_message"></span></li>
+				
+				<li><label> <span class="input_title">本文</span> <textarea
+							name="reviewText" rows="6" th:text="${reviewForm.reviewText}"></textarea>
+				</label> <span class="error_message"></span></li>
+			</ul>
+			<input type="submit" value="確認" class="send_button" />
+		</form>
+		<form th:action="@{/review/list/} + ${item.id}" method="get">
+			<input type="submit" value="戻る" class="back_button" />
+		</form>
+	</div>
+
+</body>
+</html>
