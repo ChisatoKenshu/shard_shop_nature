@@ -1,7 +1,6 @@
 package jp.co.sss.shop.controller.item;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -12,11 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import jp.co.sss.shop.bean.UserBean;
-import jp.co.sss.shop.entity.Category;
 import jp.co.sss.shop.entity.Item;
-import jp.co.sss.shop.entity.Order;
-import jp.co.sss.shop.entity.User;
 import jp.co.sss.shop.repository.ItemRepository;
 import jp.co.sss.shop.repository.OrderItemRepository;
 import jp.co.sss.shop.repository.OrderRepository;
@@ -55,9 +50,9 @@ public class ItemShowCustomerController {
 	@RequestMapping(path = "/")
 	public String index(Model model,HttpSession session) {
 		// 売れ筋ソートで商品ID検索
-		List<Integer> itemIdSort = orderItemRepository.findIdSUMDescWithQuery();
+	List<Integer> itemIdSort = orderItemRepository.findIdSUMDescWithQuery();
 		// 削除フラグで商品ID検索
-		List<Integer> itemIdStock = itemRepository.findIdWithQuery();
+	List<Integer> itemIdStock = itemRepository.findIdWithQuery();
 		// 商品情報を格納するリストを宣言
 		List<Item> item = new ArrayList<>();
 		// 商品情報が入った回数をカウントする変数
@@ -79,63 +74,7 @@ public class ItemShowCustomerController {
 		// モデルにItemリストを渡す
 		model.addAttribute("items", item);
 		
-		Integer id;
-		List<Item> items = new ArrayList<>();
-		// 参照先テーブルに対応付けられたエンティティ Category のオブジェクトを生成
-		Category category = new Category();
 		
-		UserBean user = (UserBean) session.getAttribute("user");
-		Integer loginUserId = user.getId();
-		User userId = new User();
-		userId.setId(loginUserId);
-		
-		
-		Order order = new Order();
-		List<Integer> OId = orderRepository.findIdByUserId(userId);
-		for(int oId : OId) {
-			order.
-		}
-		
-		
-		
-		
-		List<Integer> categoryId = new ArrayList<>();
-		
-		
-		Order order = new Order();
-		for(int oId : OId) {
-			
-		}
-		// 購入された商品の商品Idを検索
-		List<Integer> itemId = orderItemRepository.findItemIdWithQuery();
-		
-
-
-		for (Integer i = 0; i < itemId.size(); i++) {
-
-			// 商品Idリストからidを取り出す
-			id = itemId.get(i);
-
-			// Category のオブジェクト内の id フィールドに検索したIdを代入
-			categoryId.add(itemRepository.findCategoryIdById(id));
-			}
-		//カテゴリーIdリストの重複が排除されたCIdリストを作成
-		List<Integer> CId = new ArrayList<Integer>(new HashSet<>(categoryId));
-		
-		for (int cId : CId) {
-			category.setId(cId);
-			List<Item> OItem = itemRepository.findByDeleteFlagAndCategory(0,category);
-			for(Item Oitem : OItem) {
-				items.add(Oitem);
-				cnt++;
-				break;
-			}
-				if(cnt==4) {
-					break;
-				}
-			
-		}
-		model.addAttribute("OItems", items);
 		return "index";
 	}
 
