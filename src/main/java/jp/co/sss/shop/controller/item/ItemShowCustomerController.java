@@ -4,16 +4,20 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import jp.co.sss.shop.bean.UserBean;
 import jp.co.sss.shop.entity.Category;
 import jp.co.sss.shop.entity.Item;
 import jp.co.sss.shop.repository.ItemRepository;
 import jp.co.sss.shop.repository.OrderItemRepository;
+import jp.co.sss.shop.repository.OrderRepository;
 
 /**
  * 商品管理 一覧表示機能(一般会員用)のコントローラクラス
@@ -33,6 +37,12 @@ public class ItemShowCustomerController {
 	 */
 	@Autowired
 	OrderItemRepository orderItemRepository;
+	
+	/**
+	 * 注文情報
+	 */
+	@Autowired
+	OrderRepository orderRepository;
 
 	/**
 	 * トップ画面 表示処理
@@ -41,7 +51,7 @@ public class ItemShowCustomerController {
 	 * @return "/" トップ画面へ
 	 */
 	@RequestMapping(path = "/")
-	public String index(Model model) {
+	public String index(Model model,HttpSession session) {
 		// 売れ筋ソートで商品ID検索
 		List<Integer> itemIdSort = orderItemRepository.findIdSUMDescWithQuery();
 		// 削除フラグで商品ID検索
@@ -66,7 +76,14 @@ public class ItemShowCustomerController {
 		}
 		// モデルにItemリストを渡す
 		model.addAttribute("items", item);
-
+		
+		
+		UserBean user = (UserBean) session.getAttribute("user");
+		
+		Integer userId = user.getId();
+		List<Integer> OId = orderRepository.findIdByUserId(userId);
+		
+		
 		Integer id;
 		List<Item> items = new ArrayList<>();
 		// 参照先テーブルに対応付けられたエンティティ Category のオブジェクトを生成
@@ -100,7 +117,7 @@ public class ItemShowCustomerController {
 				cnt++;
 				break;
 			}
-				if(cnt==3) {
+				if(cnt==4) {
 					break;
 				}
 			

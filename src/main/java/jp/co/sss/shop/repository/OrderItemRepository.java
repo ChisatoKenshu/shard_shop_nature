@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import jp.co.sss.shop.entity.Category;
 import jp.co.sss.shop.entity.Item;
+import jp.co.sss.shop.entity.Order;
 import jp.co.sss.shop.entity.OrderItem;
 
 /**
@@ -17,13 +18,13 @@ import jp.co.sss.shop.entity.OrderItem;
 public interface OrderItemRepository extends JpaRepository<OrderItem, Integer> {
 	
 	/** OrderItemテーブルから商品IDを売れた個数の降順で取り出す*/
-	@Query("SELECT oi.item.id FROM OrderItem oi GROUP BY oi.item.id ORDER BY SUM(oi.quantity) DESC, oi.item.id ASC")
+	@Query("SELECT oi.item.id FROM OrderItem oi GROUP BY oi.item.id ORDER BY SUM(oi.quantity) DESC, oi.order.id ASC")
 	public List<Integer> findIdSUMDescWithQuery();
 	
 	
 	//購入された商品の商品Idを検索
-	@Query("select distinct oi.item.id from OrderItem oi")
-	public List<Integer> findItemIdWithQuery();
+	@Query("SELECT DISTINCT oi.item.id FROM OrderItem oi")
+	public List<Integer> findItemIdWithQuery(Order order);
 	
 	/** 購入された商品のカテゴリーIdを検索*/
 	@Query("select i.category.id from Item i")
