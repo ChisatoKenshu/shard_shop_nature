@@ -36,7 +36,7 @@
 
 			<ul class="input_list">
 				<li><label> <span class="input_title">評価値</span><br>
-				<span th:each="evaluation : ${evaluations}"><input type="radio"
+				<span th:each="evaluation : ${evaluations}" class="review_button_evaluation"><input type="radio"
 						name="evaluation"
 						th:value="${evaluation.key}"
 						th:text="${evaluation.value}"

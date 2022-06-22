@@ -693,3 +693,7 @@ p.link_center {
 .operation.review span {
 	color: red;
 }
+
+.review_button_evaluation {
+	margin-right: 1.35em;
+}
