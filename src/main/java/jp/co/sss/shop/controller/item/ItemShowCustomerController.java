@@ -17,6 +17,7 @@ import jp.co.sss.shop.entity.Item;
 import jp.co.sss.shop.repository.FavoriteRepository;
 import jp.co.sss.shop.repository.ItemRepository;
 import jp.co.sss.shop.repository.OrderItemRepository;
+import jp.co.sss.shop.repository.ReviewRepository;
 
 /**
  * 商品管理 一覧表示機能(一般会員用)のコントローラクラス
@@ -39,6 +40,9 @@ public class ItemShowCustomerController {
 
 	@Autowired
 	FavoriteRepository favoriteRepository;
+	
+	@Autowired
+	ReviewRepository reviewRepository;
 	
 	/**
 	 * トップ画面 表示処理
@@ -137,6 +141,9 @@ public class ItemShowCustomerController {
 			Favorite favorite = favoriteRepository.findByUserIdAndItemId(userId, id);
 			model.addAttribute("favorite", favorite);	
 		}
+		
+		//レビュー平均
+		model.addAttribute("reviewAVG", reviewRepository.findAVGByPermissionFlagGroupByItemIdQuery(id));
 		
 		return "item/detail/item_detail";
 	}

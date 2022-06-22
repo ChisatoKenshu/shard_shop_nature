@@ -31,7 +31,11 @@
 				</dl>
 			</div>
 			
-			<div><a th:href="@{/review/list/{id}(id=${item.id})}" th:text="レビュー一覧へ"></a></div>
+			<p>レビュー</p>
+			<div>
+				<span th:text="'平均 ' + ${reviewAVG} + ' /5.0'"></span>
+				<a th:href="@{/review/list/{id}(id=${item.id})}" th:text="レビュー一覧へ"></a>
+			</div>
 			
 			<div class="detail_button_area">
 				<th:block th:if="${item.stock != 0}">
