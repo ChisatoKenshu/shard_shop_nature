@@ -66,7 +66,7 @@ public class ReviewRegistCustomerController {
 		return "review/regist/review_regist_input";
 	}
 
-	@RequestMapping(path = "/item/regist/input/{id}", method = RequestMethod.POST)
+	@RequestMapping(path = "/review/regist/input/{id}", method = RequestMethod.POST)
 	public String registInputBack(@PathVariable int id, Model model, ReviewForm reviewForm) {
 
 		// 商品IDに該当する商品情報を取得
@@ -82,7 +82,7 @@ public class ReviewRegistCustomerController {
 		radioEvaluation.put(5, "☆5");
 		model.addAttribute("evaluations", radioEvaluation);
 
-		return "item/regist/item_regist_input";
+		return "review/regist/review_regist_input";
 	}
 
 	@RequestMapping(path = "/review/regist/check/{id}")
@@ -90,7 +90,18 @@ public class ReviewRegistCustomerController {
 			BindingResult result) {
 
 		if (result.hasErrors()) {
-			return "item/regist/item_regist_input";
+			Item item = itemRepository.getById(id);
+			model.addAttribute("item", item);
+			
+			Map<Integer, String> radioEvaluation = new LinkedHashMap<>();
+			radioEvaluation.put(1, "☆1");
+			radioEvaluation.put(2, "☆2");
+			radioEvaluation.put(3, "☆3");
+			radioEvaluation.put(4, "☆4");
+			radioEvaluation.put(5, "☆5");
+			model.addAttribute("evaluations", radioEvaluation);
+			
+			return "review/regist/review_regist_input";
 		}
 
 		// 商品IDに該当する商品情報を取得

@@ -16,7 +16,7 @@
 		</span>
 		<span th:text="${item.name}"></span>
 		<div th:if="${session.user != null}">
-			<form th:action="@{/review/regist/input/{id}(id=${item.id})}" class="delete_button_area" method="POST">
+			<form th:action="@{/review/regist/input/{id}(id=${item.id})}" class="delete_button_area" method="GET">
 				<input type="submit" value="レビューを書く" />
 			</form>
 		</div>
