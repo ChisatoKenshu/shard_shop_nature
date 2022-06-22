@@ -16,7 +16,7 @@
 				</li>
 				<li>
 					<span class="input_title">商品画像</span>
-					<span class="input_value">
+					<span class="input_value review_image">
 						<img th:src="@{/img/{itemFileName}(itemFileName=${review.item.image})}" th:if="${review.item.image != null}"></img>
 						<img th:src="@{/img/common/no_image.jpg}" th:if="${review.item.image == null}"></img>
 					</span>

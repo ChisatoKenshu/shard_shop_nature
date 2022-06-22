@@ -75,23 +75,25 @@
 			</tr>
 		</table>
 		
-		<form th:action="@{/order/complete}"  class="detail_button_area" method="POST">
+		<div class="order_info_form_area">
+		<form th:action="@{/order/complete}"  class="detail_button_area order" method="POST">
 			<input type="hidden" name="postalCode" th:value="${order.postalCode}" />
 			<input type="hidden" name="address" th:value="${order.address}" />
 			<input type="hidden" name="name" th:value="${order.name}" />
 			<input type="hidden" name="phoneNumber" th:value="${order.phoneNumber}" />
 			<input type="hidden" name="payMethod" th:value="${order.payMethod}" />
-		    <input type="submit" value="ご注文の確定" />
+		    <input type="submit" value="ご注文の確定" class="send_button" />
 		</form>
 
-		<form th:action="@{/payment/input}"  class="detail_button_area" method="POST">
+		<form th:action="@{/payment/input}"  class="detail_button_area order" method="POST">
 			<input type="hidden" name="postalCode" th:value="${order.postalCode}" />
 			<input type="hidden" name="address" th:value="${order.address}" />
 			<input type="hidden" name="name" th:value="${order.name}" />
 			<input type="hidden" name="phoneNumber" th:value="${order.phoneNumber}" />
 			<input type="hidden" name="payMethod" th:value="${order.payMethod}" />
 			<input type="hidden" name="backFlg" value="true" />
-		    <input type="submit" value="戻る" />
+		    <input type="submit" value="戻る" class="back_button" />
 		</form>
+		</div>
 </body>
 </html>

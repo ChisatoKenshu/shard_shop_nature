@@ -43,7 +43,7 @@
 			<div class="operation review" th:if="${(session.user != null) && (review.user.id == session.user.id)}">
 				<form th:action="@{/review/delete/check}" class="delete_button_area" method="POST">
 					<input type="hidden" name="id" th:value="${review.id}" />
-					<input type="submit" value="削除" />
+					<input type="submit" value="削除" class="delete" />
 				</form>
 			</div>
 			<div class="review_text" th:text="${review.reviewText}"></div>

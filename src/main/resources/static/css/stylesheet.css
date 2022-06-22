@@ -178,7 +178,9 @@ p {
 }
 
 .user_info_form_area,
-.user_detail_area {
+.user_detail_area,
+.adress_info_form_area,
+.payment_info_form_area {
 	display: block;
 	width: 50%;
 	margin: 50px auto 0;
@@ -266,18 +268,29 @@ p {
 }
 
 .user_info_form_area [type="submit"],
-.item_info_form_area [type="submit"] {
+.item_info_form_area [type="submit"],
+.adress_info_form_area [type="submit"],
+.payment_info_form_area [type="submit"],
+.order_info_form_area [type="submit"],
+.review_button_area [type="submit"] {
 	line-height: 2.8rem;
 	min-width: 7rem;
 	margin-right: 20px;
 	font-size: 1rem;
 }
 .user_info_form_area .send_button,
-.item_info_form_area .send_button {
+.item_info_form_area .send_button,
+.adress_info_form_area .send_button,
+.payment_info_form_area .send_button,
+.order_info_form_area .send_button {
 	background: #edf9fe;
 }
 .user_info_form_area .back_button,
-.item_info_form_area .back_button {
+.item_info_form_area .back_button,
+.adress_info_form_area .back_button,
+.payment_info_form_area .back_button,
+.order_info_form_area .back_button,
+.review_button_area .back_button {
 	background: #ddd;
 }
 .order_check .user_info_form_area {
@@ -696,4 +709,18 @@ p.link_center {
 
 .review_button_evaluation {
 	margin-right: 1.35em;
+}
+.input_value.review_image {
+	width: 30%;
+}
+
+
+.payment_info_form_area {
+	font-size: 1.6em;
+}
+.bottom_space {
+	margin-bottom: 10px;
+}
+.order_info_form_area {
+	text-align: center;
 }
