@@ -45,21 +45,21 @@ public class ReviewForm {
 	 * タイトル
 	 */
 	@NotBlank
-	@Size(max = 20)
+	@Size(min = 1, max = 20)
 	private String title;
 	
 	/**
 	 * ニックネーム
 	 */
 	@NotBlank
-	@Size(max = 20)
+	@Size(min = 1, max = 20)
 	private String nickname;
 	
 	/**
 	 * レビュー本文
 	 */
 	@NotBlank
-	@Size(max = 200)
+	@Size(min = 1, max = 200)
 	private String reviewText;
 	
 	/**
