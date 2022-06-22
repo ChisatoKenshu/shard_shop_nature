@@ -1,6 +1,8 @@
 package jp.co.sss.shop.controller.item;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -14,6 +16,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import jp.co.sss.shop.entity.Category;
@@ -22,7 +26,6 @@ import jp.co.sss.shop.form.ItemForm;
 import jp.co.sss.shop.repository.CategoryRepository;
 import jp.co.sss.shop.repository.ItemRepository;
 import jp.co.sss.shop.util.BeanCopy;
-import jp.co.sss.shop.util.Constant;
 
 /**
  * 商品管理 登録機能のコントローラクラス
@@ -113,18 +116,21 @@ public class ItemRegistAdminController {
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddhhmmss");
 			String date = dateFormat.format(new Date());
 
-			// ファイルのアップロード先を指定
-			imageName = date + "_" + imageName;
-			File uploadPath = new File(Constant.FILE_UPLOAD_PATH, imageName);
-
-			try {
-				// 指定されたファイルを一時的にアップロード
-				file.transferTo(uploadPath);
-			}
-			catch (Exception e) {
-				e.printStackTrace();
-				return "error";
-			}
+            // ファイルのアップロード先を指定
+            imageName = date + "_" + imageName;
+            ServletContext context = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+                    .getRequest().getServletContext();
+            File uploadPath = new File(context.getRealPath("/img"), imageName);
+            try {
+                if (!Files.exists(Paths.get(context.getRealPath("/img")))) {
+                    Files.createDirectory(Paths.get(context.getRealPath("/img")));
+                }
+                // 指定されたファイルを一時的にアップロード
+                file.transferTo(uploadPath);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "error";
+            }
 
 			// 一時的にアップロードしたファイルの名前をFormクラスにセット
 			form.setImage(imageName);
