@@ -37,7 +37,7 @@
 			<div class="operation review">
 				<form th:action="@{/review/delete/check/admin}" class="delete_button_area" method="POST">
 					<input type="hidden" name="id" th:value="${review.id}" />
-					<input type="submit" value="削除" />
+					<input type="submit" value="削除" class="delete" />
 				</form>
 				<form th:action="@{/review/permission_switching/admin/{id}(id=${item.id})}" class="permission_button_area" method="POST">
 					<input type="hidden" name="reviewId" th:value="${review.id}" />
@@ -51,7 +51,7 @@
 	</div>
 	<div class="review_button_area back_button">
 		<form th:action="@{/item/detail/admin/{id}(id=${item.id})}">
-			<input type="submit" value="戻る"  class="back_button" />
+			<input type="submit" value="戻る" class="back_button" />
 		</form>
 	</div>
 </body>
