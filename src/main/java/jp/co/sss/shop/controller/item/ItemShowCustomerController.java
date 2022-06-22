@@ -1,6 +1,7 @@
 package jp.co.sss.shop.controller.item;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +69,12 @@ public class ItemShowCustomerController {
 
 		Integer id;
 		List<Item> items = new ArrayList<>();
+		// 参照先テーブルに対応付けられたエンティティ Category のオブジェクトを生成
+		Category category = new Category();
+		
+		List<Integer> categoryId = new ArrayList<>();
+		
+		
 		
 		// 購入された商品の商品Idを検索
 		List<Integer> itemId = orderItemRepository.findItemIdWithQuery();
@@ -79,20 +86,23 @@ public class ItemShowCustomerController {
 			// 商品Idリストからidを取り出す
 			id = itemId.get(i);
 
-			// 参照先テーブルに対応付けられたエンティティ Category のオブジェクトを生成
-			Category category = new Category();
-
 			// Category のオブジェクト内の id フィールドに検索したIdを代入
-			category.setId(itemRepository.findCategoryIdById(id));
-
-			List<Item> OItem = itemRepository.findByDeleteFlagAndCategory(0,category);
-			
-			for(Item Oitem : OItem) {
-				if(Oitem.getId() != id) {
-				items.add(Oitem);
-				}
+			categoryId.add(itemRepository.findCategoryIdById(id));
 			}
-			
+		//カテゴリーIdリストの重複が排除されたCIdリストを作成
+		List<Integer> CId = new ArrayList<Integer>(new HashSet<>(categoryId));
+		
+		for (int cId : CId) {
+			category.setId(cId);
+			List<Item> OItem = itemRepository.findByDeleteFlagAndCategory(0,category);
+			for(Item Oitem : OItem) {
+				items.add(Oitem);
+				cnt++;
+				break;
+			}
+				if(cnt==3) {
+					break;
+				}
 			
 		}
 		model.addAttribute("OItems", items);
