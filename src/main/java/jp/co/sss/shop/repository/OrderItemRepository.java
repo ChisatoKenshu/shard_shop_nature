@@ -17,7 +17,7 @@ import jp.co.sss.shop.entity.OrderItem;
 public interface OrderItemRepository extends JpaRepository<OrderItem, Integer> {
 	
 	/** OrderItemテーブルから商品IDを売れた個数の降順で取り出す*/
-	@Query("SELECT oi.item.id FROM OrderItem oi GROUP BY oi.item.id ORDER BY SUM(oi.quantity) DESC, oi.order.id ASC")
+	@Query("SELECT oi.item.id FROM OrderItem oi GROUP BY oi.item.id ORDER BY SUM(oi.quantity) DESC, oi.item.id ASC")
 	public List<Integer> findIdSUMDescWithQuery();
 	
 	
@@ -33,5 +33,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Integer> {
 	@Query("select i from Item i where i.deleteFlag = 0 and i.category.id = :category")
 	public List<Item> findByDeleteFlagAndCategoryId(Category category);
 
-
+	//購入された商品の商品Idを検索
+	@Query("SELECT DISTINCT oi.item.id FROM OrderItem oi where oi.orderId = :orderId")
+	public List<Integer> findItemIdWithQuery(Integer orderId);
 }

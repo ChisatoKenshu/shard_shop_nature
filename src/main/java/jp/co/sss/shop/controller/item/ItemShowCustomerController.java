@@ -3,6 +3,7 @@ package jp.co.sss.shop.controller.item;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import jp.co.sss.shop.bean.UserBean;
+import jp.co.sss.shop.entity.Category;
 import jp.co.sss.shop.entity.Item;
+import jp.co.sss.shop.entity.Order;
+import jp.co.sss.shop.entity.User;
 import jp.co.sss.shop.repository.ItemRepository;
 import jp.co.sss.shop.repository.OrderItemRepository;
 import jp.co.sss.shop.repository.OrderRepository;
@@ -48,7 +53,7 @@ public class ItemShowCustomerController {
 	 * @return "/" トップ画面へ
 	 */
 	@RequestMapping(path = "/")
-	public String index(Model model,HttpSession session) {
+	public String index(Model model,HttpServletRequest request) {
 		// 売れ筋ソートで商品ID検索
 	List<Integer> itemIdSort = orderItemRepository.findIdSUMDescWithQuery();
 		// 削除フラグで商品ID検索
@@ -73,6 +78,26 @@ public class ItemShowCustomerController {
 		}
 		// モデルにItemリストを渡す
 		model.addAttribute("items", item);
+		
+		
+		Integer id;
+		List<Item> items = new ArrayList<>();
+		
+		// 参照先テーブルに対応付けられたエンティティ Category のオブジェクトを生成
+		Category category = new Category();
+		
+		User userId = new User();
+		HttpSession session = request.getSession(false);
+		if(session.isNew()) {
+			UserBean user = (UserBean) session.getAttribute("user");
+			Integer loginUserId = user.getId();
+			userId.setId(loginUserId);
+			
+			Order order = new Order();
+			List<Integer> itemId = new ArrayList<>();
+			List<Integer> OId = orderRepository.findIdByUserId(userId);
+			}
+		
 		
 		
 		return "index";
