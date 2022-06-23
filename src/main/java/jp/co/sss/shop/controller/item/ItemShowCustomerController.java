@@ -1,6 +1,7 @@
 package jp.co.sss.shop.controller.item;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -121,7 +122,7 @@ public class ItemShowCustomerController {
 					itemId2.add(iId);
 				}
 			}
-			
+			Collections.shuffle(itemId2);
 			//購入したことのある商品の商品Idを排除したものを格納するリストを作成
 			List<Integer> itemId3 = new ArrayList<>();
 			int cnt2 = 0;
@@ -147,8 +148,8 @@ public class ItemShowCustomerController {
 			int cnt3 = 0;
 			for(int item3 : itemId3) {
 			  Item.add(itemRepository.getById(item3));
-			  cnt++;
-			  if(cnt==3) {
+			  cnt3++;
+			  if(cnt3==3) {
 				  break;
 			  }
 			}

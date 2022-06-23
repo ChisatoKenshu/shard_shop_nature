@@ -18,7 +18,7 @@
 			</span>
 		</a>
 		</div>
-	<div>ここからオススメ</div>
+	<div th:if="!${#lists.isEmpty(OItems)}">おすすめ商品</div>
 	<div class="item" th:if="!${#lists.isEmpty(OItems)}" th:each="OItem: ${OItems}" >
 	<div class="item_name" th:text="${OItem.name}"></div>
 	<a th:href="@{/item/detail/{id}(id=${OItem.id})}">
