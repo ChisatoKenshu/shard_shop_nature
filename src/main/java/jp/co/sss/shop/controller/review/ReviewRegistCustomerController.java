@@ -39,6 +39,9 @@ public class ReviewRegistCustomerController {
 	@Autowired
 	ItemRepository itemRepository;
 
+	/**
+	 * ユーザ情報
+	 */
 	@Autowired
 	UserRepository userRepository;
 
@@ -49,6 +52,7 @@ public class ReviewRegistCustomerController {
 		Item item = itemRepository.getById(id);
 		model.addAttribute("item", item);
 
+		//reviewFormがリクエストスコープになければ渡す
 		if (!model.containsAttribute("reviewForm")) {
 			model.addAttribute("reviewForm", new ReviewForm());
 		}
@@ -88,10 +92,14 @@ public class ReviewRegistCustomerController {
 	public String registCheck(@PathVariable int id, Model model, @Valid @ModelAttribute ReviewForm reviewForm,
 			BindingResult result) {
 
+		// 商品IDに該当する商品情報を取得
+		Item item = itemRepository.getById(id);
+		model.addAttribute("item", item);
+		
+		//入力チェックに引っかかったら入力画面に戻るためのデータを返す
 		if (result.hasErrors()) {
-			Item item = itemRepository.getById(id);
-			model.addAttribute("item", item);
 			
+			// ラジオボタンのMapを作成しModelでViewに渡す
 			Map<Integer, String> radioEvaluation = new LinkedHashMap<>();
 			radioEvaluation.put(1, "☆1");
 			radioEvaluation.put(2, "☆2");
@@ -103,10 +111,6 @@ public class ReviewRegistCustomerController {
 			return "review/regist/review_regist_input";
 		}
 
-		// 商品IDに該当する商品情報を取得
-		Item item = itemRepository.getById(id);
-		model.addAttribute("item", item);
-
 		return "review/regist/review_regist_check";
 	}
 
@@ -115,9 +119,10 @@ public class ReviewRegistCustomerController {
 
 		// Formクラス内の各フィールドの値をエンティティにコピー
 		Review review = new Review();
-
+		
 		review.setItem(itemRepository.getById(itemId));
 
+		//セッションのユーザーのidをレビュー情報に追加
 		Integer userId = ((UserBean) session.getAttribute("user")).getId();
 		review.setUser(userRepository.getById(userId));
 
