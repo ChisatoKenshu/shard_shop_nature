@@ -672,7 +672,7 @@ p.link_center {
 	border-bottom: 1px solid #87ceeb;
 }
 .float_box {
-	width:50%;
+	width:65%;
 	float: left;
 	border: 2px solid #3d98bf;
 	border-radius: 10px;
@@ -708,13 +708,22 @@ p.link_center {
 }
 
 .review_button_evaluation {
-	margin-right: 1.35em;
+	margin-right: 1.2em;
 }
 .input_value.review_image {
 	width: 30%;
 }
+.review_average {
+	font-size: 2.0em;
+	margin: 0 1em;
+}
 
+.review_list_link {
+	font-size: 1.5em;
+	margin: 0 1em;
+}
 
+/*---- 注文管理 ----*/
 .payment_info_form_area {
 	font-size: 1.6em;
 }
