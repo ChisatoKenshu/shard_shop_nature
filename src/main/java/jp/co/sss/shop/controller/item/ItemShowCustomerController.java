@@ -1,6 +1,7 @@
 package jp.co.sss.shop.controller.item;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import jp.co.sss.shop.bean.UserBean;
 import jp.co.sss.shop.entity.Category;
 import jp.co.sss.shop.entity.Item;
-import jp.co.sss.shop.entity.Order;
 import jp.co.sss.shop.entity.User;
 import jp.co.sss.shop.repository.ItemRepository;
 import jp.co.sss.shop.repository.OrderItemRepository;
@@ -91,13 +91,27 @@ public class ItemShowCustomerController {
 		if(session.isNew()) {
 			UserBean user = (UserBean) session.getAttribute("user");
 			Integer loginUserId = user.getId();
-			userId.setId(loginUserId);
 			
-			Order order = new Order();
 			List<Integer> itemId = new ArrayList<>();
-			List<Integer> OId = orderRepository.findIdByUserId(userId);
+			List<Integer> OId = orderRepository.findIdByUserId(loginUserId);
+			for(int oId : OId) {
+				// 購入された商品の商品Idを検索
+				List<Integer> IId = orderItemRepository.findItemIdWithQuery(oId);
+				for(int iId : IId) {
+					itemId.add(iId);
+				}
 			}
-		
+			//itemIdリストの重複を排除したItemIdリストを作成
+			List<Integer> ItemId = new ArrayList<Integer>(new HashSet<>(itemId));
+			
+			//カテゴリーIdを格納するリストを作成
+			List<Integer> CategoryId = new ArrayList<>();
+			
+ 			//ItemIdリストから1ずつ取り出す
+			for(int pureItemId:ItemId) {
+				CategoryId.add(itemRepository.findCategoryIdById(pureItemId));
+			}
+		}
 		
 		
 		return "index";

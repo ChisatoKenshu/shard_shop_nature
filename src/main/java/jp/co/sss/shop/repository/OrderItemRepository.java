@@ -34,6 +34,6 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Integer> {
 	public List<Item> findByDeleteFlagAndCategoryId(Category category);
 
 	//購入された商品の商品Idを検索
-	@Query("SELECT DISTINCT oi.item.id FROM OrderItem oi where oi.orderId = :orderId")
+	@Query("SELECT oi.item.id FROM OrderItem oi where oi.order.id = :orderId")
 	public List<Integer> findItemIdWithQuery(Integer orderId);
 }
