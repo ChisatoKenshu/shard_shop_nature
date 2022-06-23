@@ -22,6 +22,8 @@
 				<th>商品画像</th>
 				<th>商品名</th>
 				<th>価格</th>
+				<th>購入</th>
+				<th>お気に入りから削除</th>
 			</tr>
 			<!--/* お気に入り情報 */-->
 			<tr th:each="favorite, st: ${favorites}">
@@ -52,7 +54,7 @@
 					<td>
 						<form th:action="@{/favorite/delete}" method="post">
 							<input type="hidden" th:value="${items.get(favorite.itemId - 1).id}" name="itemId">
-							<input type="submit" value="削除">
+							<input type="submit" value="削除" class="delete">
 						</form>
 					</td>
 				</th:block>

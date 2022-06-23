@@ -617,6 +617,10 @@ form.delete {
 	float: left;
 	margin-right: 10px;
 }
+.user_info_form_area .basket_form {
+	margin-top: 30px;
+	text-align: center;
+}
 
 /* ---- 商品画像(詳細、編集、削除) ---- */
 .value img {
