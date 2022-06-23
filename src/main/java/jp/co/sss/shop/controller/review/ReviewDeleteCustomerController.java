@@ -3,9 +3,9 @@ package jp.co.sss.shop.controller.review;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jp.co.sss.shop.entity.Review;
 import jp.co.sss.shop.repository.ReviewRepository;
@@ -50,17 +50,16 @@ public class ReviewDeleteCustomerController {
 	 * @return "redirect:/review/delete/complete" レビュー情報 削除完了画面へ
 	 */
 	@RequestMapping(path = "/review/delete/complete", method = RequestMethod.POST)
-	public String deleteComplete(Integer id, RedirectAttributes redirectAttributes) {
+	public String deleteComplete(Integer id) {
 		
 		// 削除対象のレビュー情報から商品IDを取得しリダイレクト先に受け渡す
 		Review review = reviewRepository.getById(id);
 		Integer itemId = review.getItem().getId();
-		redirectAttributes.addFlashAttribute("itemId", itemId);
 
 		// 削除対象のレビュー情報を物理削除
 		reviewRepository.deleteById(id);
 
-		return "redirect:/review/delete/complete";
+		return "redirect:/review/delete/complete/" + itemId;
 	}
 	
 	/**
@@ -68,12 +67,8 @@ public class ReviewDeleteCustomerController {
 	 * 
 	 * @return "review/delete/review_delete_complete"  レビュー情報 削除完了画面へ
 	 */
-	@RequestMapping(path = "/review/delete/complete", method = RequestMethod.GET)
-	public String deleteCompleteRedirect(Model model) {
-		
-		// リダイレクト前に受け渡した情報を取得
-		Integer itemId = (Integer) model.getAttribute("itemId");
-		
+	@RequestMapping(path = "/review/delete/complete/{itemId}", method = RequestMethod.GET)
+	public String deleteCompleteRedirect(Model model, @PathVariable int itemId) {
 		// レビュー情報をViewに渡す
 		model.addAttribute("itemId", itemId);
 
