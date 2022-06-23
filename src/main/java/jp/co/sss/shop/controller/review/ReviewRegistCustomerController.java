@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jp.co.sss.shop.bean.UserBean;
 import jp.co.sss.shop.entity.Item;
@@ -112,8 +111,7 @@ public class ReviewRegistCustomerController {
 	}
 
 	@RequestMapping(path = "/review/regist/complete")
-	public String registComplete(Model model, ReviewForm reviewForm, int itemId, HttpSession session,
-			RedirectAttributes redirectAttributes) {
+	public String registComplete(Model model, ReviewForm reviewForm, int itemId, HttpSession session) {
 
 		// Formクラス内の各フィールドの値をエンティティにコピー
 		Review review = new Review();
@@ -136,18 +134,11 @@ public class ReviewRegistCustomerController {
 		// 商品情報を保存
 		reviewRepository.save(review);
 
-		// 削除対象のレビュー情報から商品IDを取得しリダイレクト先に受け渡す
-		redirectAttributes.addFlashAttribute("itemId", itemId);
-
-		return "redirect:/review/regist/complete";
+		return "redirect:/review/regist/complete/" + itemId;
 	}
 
-	@RequestMapping(path = "/review/regist/complete", method = RequestMethod.GET)
-	public String registCompleteRedirect(Model model) {
-
-		// リダイレクト前に受け渡した情報を取得
-		Integer itemId = (Integer) model.getAttribute("itemId");
-
+	@RequestMapping(path = "/review/regist/complete/{itemId}", method = RequestMethod.GET)
+	public String registCompleteRedirect(Model model, @PathVariable int itemId) {
 		// レビュー情報をViewに渡す
 		model.addAttribute("itemId", itemId);
 
