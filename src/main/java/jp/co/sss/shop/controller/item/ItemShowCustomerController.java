@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import jp.co.sss.shop.bean.UserBean;
 import jp.co.sss.shop.entity.Category;
 import jp.co.sss.shop.entity.Item;
-import jp.co.sss.shop.entity.User;
 import jp.co.sss.shop.repository.ItemRepository;
 import jp.co.sss.shop.repository.OrderItemRepository;
 import jp.co.sss.shop.repository.OrderRepository;
@@ -53,7 +52,7 @@ public class ItemShowCustomerController {
 	 * @return "/" トップ画面へ
 	 */
 	@RequestMapping(path = "/")
-	public String index(Model model,HttpServletRequest request) {
+	public String index(Model model,HttpServletRequest request,HttpSession session) {
 		// 売れ筋ソートで商品ID検索
 	List<Integer> itemIdSort = orderItemRepository.findIdSUMDescWithQuery();
 		// 削除フラグで商品ID検索
@@ -80,15 +79,14 @@ public class ItemShowCustomerController {
 		model.addAttribute("items", item);
 		
 		
-		Integer id;
+		
 		List<Item> items = new ArrayList<>();
 		
 		// 参照先テーブルに対応付けられたエンティティ Category のオブジェクトを生成
 		Category category = new Category();
 		
-		User userId = new User();
-		HttpSession session = request.getSession(false);
-		if(session.isNew()) {
+		session = request.getSession(false);
+		if(session.getAttribute("user")!=null) {
 			UserBean user = (UserBean) session.getAttribute("user");
 			Integer loginUserId = user.getId();
 			
@@ -102,16 +100,62 @@ public class ItemShowCustomerController {
 				}
 			}
 			//itemIdリストの重複を排除したItemIdリストを作成
-			List<Integer> ItemId = new ArrayList<Integer>(new HashSet<>(itemId));
+			List<Integer> PureItemId = new ArrayList<Integer>(new HashSet<>(itemId));
 			
 			//カテゴリーIdを格納するリストを作成
 			List<Integer> CategoryId = new ArrayList<>();
 			
  			//ItemIdリストから1ずつ取り出す
-			for(int pureItemId:ItemId) {
+			for(int pureItemId : PureItemId) {
 				CategoryId.add(itemRepository.findCategoryIdById(pureItemId));
 			}
+			
+			//CategoryIdリストの重複を排除したPureCategoryリストを作成
+			List<Integer> PureCategoryId = new ArrayList<Integer>(new HashSet<>(CategoryId));
+			
+			//商品Idを格納するリストを作成
+			List<Integer> itemId2 = new ArrayList<>();
+			for(int pureCategoryId : PureCategoryId) {
+				List<Integer> IId= itemRepository.findIdByCategoryIdWithQuery(pureCategoryId);
+				for(int iId : IId) {
+					itemId2.add(iId);
+				}
+			}
+			
+			//購入したことのある商品の商品Idを排除したものを格納するリストを作成
+			List<Integer> itemId3 = new ArrayList<>();
+			int cnt2 = 0;
+			//itemId3にitemId2をコピー
+			for(int i2 : itemId2) {
+				itemId3.add(i2);
+			}
+			
+			for(int id2 : itemId2) {
+				for(int id : PureItemId) {
+					
+					if(id2==id) {
+						itemId3.remove(cnt2);
+						cnt2--;
+						break;
+					}
+					
+				}
+				cnt2++;
+			}
+			//購入したことのない商品情報を格納するリストを作成
+			List<Item> Item = new ArrayList<>();
+			int cnt3 = 0;
+			for(int item3 : itemId3) {
+			  Item.add(itemRepository.getById(item3));
+			  cnt++;
+			  if(cnt==3) {
+				  break;
+			  }
+			}
+			
+		model.addAttribute("OItems",Item);
 		}
+		
 		
 		
 		return "index";
