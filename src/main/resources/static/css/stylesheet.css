@@ -637,3 +637,74 @@ p.link_center {
 .err {
 	color: #FF0000;
 }
+
+/* ---- おすすめ商品情報 ---- */
+.itemOsusume {
+	display: inline-block;
+	width: 32%;
+	height: 125px;
+	border: 1px solid gray;
+	border-radius: 6px;
+	box-sizing: border-box;
+	text-decoration: none;
+	margin-top: 20px;
+	margin-right: 2%;
+	float: left;
+	position: relative;
+	overflow: hidden;
+}
+
+.itemOsusume:last-child {
+	margin-right: 0;
+}
+
+.itemOsusume .item_name {
+	padding: 5px 10px;
+	color: #3d98bf;
+	font-weight: bold;
+	position: absolute;
+	top: 5px;
+	left: 0;
+	background: rgba(255, 255, 255, 0.8);
+	z-index: 2;
+	width: 100%;
+}
+
+.itemOsusume img {
+	width: auto;
+	height: 100%;
+	display: block;
+	margin: auto;
+	transition: 0.4s;
+	position: relative;
+	z-index: 1;
+}
+
+.itemOsusume:hover img {
+	-webkit-transform: scale(1.2, 1.2);
+	-moz-transform: scale(1.2, 1.2);
+	-ms-transform: scale(1.2, 1.2);
+	-o-transform: scale(1.2, 1.2);
+	transform: scale(1.2, 1.2)
+}
+
+.itemOsusume .description {
+	padding: 5px;
+	color: #4169e1;
+	font-weight: bold;
+}
+
+.sorted_by {
+	position: absolute;
+	margin-top: 23px;
+	font-size: 1.1em;
+}
+
+.section {
+	overflow: hidden;
+	clear: both;
+	content: "";
+}
+.section .title2 {
+	margin-top: 20px;
+}
