@@ -17,20 +17,33 @@ import jp.co.sss.shop.entity.Item;
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Integer> {
 
+	/** 商品IDを削除フラグで検索*/
 	@Query("SELECT i.id FROM Item i WHERE i.deleteFlag = 0 ORDER BY i.id ASC")
 	public List<Integer> findIdWithQuery();
 	
 	/**  商品情報を新着順で検索*/
 	public List<Item> findByDeleteFlagOrderByInsertDateDescIdAsc(int deleteFlag);
 	
+	/** 商品IDを新着順で検索*/
 	@Query("SELECT i.id FROM Item i WHERE i.deleteFlag = 0 ORDER BY i.insertDate DESC, i.id ASC")
 	public List<Integer> findIdOrderByInsertDateDescWithQuery();
 	
 	/**  商品情報をカテゴリで検索*/
 	public List<Item> findByDeleteFlagAndCategory(int deleteFlag, Category category);
 	
+	/**  商品IDをカテゴリで検索*/
 	@Query("SELECT i.id FROM Item i WHERE i.deleteFlag = 0 AND i.category.id = :id")
 	public List<Integer> findIdByCategoryWithQuery(Integer id);
 
 	public List<Item> findByDeleteFlag(int deleteFlag);
+	/** 購入された商品のカテゴリーIdを商品Idで検索*/
+	@Query("select i.category.id from Item i where i.id = :id")
+	public Integer findCategoryIdById(Integer id);
+	
+	/**  商品IDをカテゴリで検索*/
+	@Query("SELECT i.id FROM Item i WHERE i.deleteFlag = 0 AND i.category.id = :id")
+	public List<Integer> findIdByCategoryIdWithQuery(Integer id);
+	
+	public List<Item> findTop3ById(int id);
+	
 }
