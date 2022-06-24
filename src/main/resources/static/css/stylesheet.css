@@ -712,8 +712,12 @@ p.link_center {
 }
 
 .review_button_evaluation {
-	margin-right: 1.2em;
+	margin-right: 1em;
 }
+.input_list label.review_button {
+	display: inline;
+}
+
 .input_value.review_image {
 	width: 30%;
 }
