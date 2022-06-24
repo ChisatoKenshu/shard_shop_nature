@@ -72,6 +72,7 @@ public class SystemAdminAccountCheckFilter implements Filter {
 				&& requestURL.indexOf("/user/list") == -1
 				|| requestURL.indexOf("/item/list/admin") != -1
 				|| requestURL.indexOf("/item/detail/admin") != -1
+				|| requestURL.indexOf("/order/list/admin") != -1
 				&& requestURL.indexOf("/logout") == -1) {
 			// URLのリクエスト先がフィルタ実行対象である場合
 			return true;
