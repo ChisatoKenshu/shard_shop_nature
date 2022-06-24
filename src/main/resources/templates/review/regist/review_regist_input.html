@@ -35,13 +35,17 @@
 			</ul>
 
 			<ul class="input_list">
-				<li><label> <span class="input_title">評価値</span><br>
-				<span th:each="evaluation : ${evaluations}" class="review_button_evaluation"><input type="radio"
+				<li>
+				<span class="input_title">評価値</span><br>
+				<span th:each="evaluation, i : ${evaluations}" class="review_button_evaluation">
+				<label th:id="${i.count}" class="review_button">
+				<input type="radio"
 						name="evaluation"
 						th:value="${evaluation.key}"
 						th:text="${evaluation.value}"
-						th:checked="${evaluation.key == reviewForm.evaluation}" /></span>
-				</label> <span class="error_message"></span></li>
+						th:checked="${evaluation.key == reviewForm.evaluation}" />
+				</label></span>
+				<span class="error_message"></span></li>
 				
 				<li><label> <span class="input_title">ニックネーム</span> <input
 						type="text" name="nickname" th:value="${reviewForm.nickname}" />
